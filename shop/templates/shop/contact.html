@@ -1,0 +1,73 @@
+{% extends "shop/base.html" %}
+{% block content %}
+
+<!-- Contact Hero -->
+<div class="bg-dark text-light py-5 text-center">
+    <h1 class="fw-bold">Contact Luchi Addiction</h1>
+    <p class="lead">Have questions? Need help choosing the perfect wig or lace? We’re always here for you.</p>
+</div>
+
+<!-- Contact Content -->
+<div class="container py-5">
+    <div class="row g-5">
+        
+        <!-- Contact Info -->
+        <div class="col-md-5">
+            <h4 class="fw-bold text-warning mb-3">Customer Care</h4>
+            <p class="text-muted">Reach us directly via phone, WhatsApp, or email:</p>
+
+            <ul class="list-unstyled mb-4">
+                <li class="mb-3">
+                    <strong>📞 Phone & WhatsApp:</strong><br>
+                    <a href="https://wa.link/ky3trb" class="text-success fw-semibold">+2349163025776</a>
+                </li>
+                <li class="mb-3">
+                    <strong>📧 Email:</strong><br>
+                    <a href="mailto:luchi_addiction@outlook.com" class="text-dark">luchi_addiction@outlook.com</a>
+                </li>
+                <li class="mb-3">
+                    <strong>📷 Instagram:</strong><br>
+                    <a href="https://instagram.com/luchi_addiction" target="_blank" class="text-warning">@luchi_addiction</a>
+                </li>
+            </ul>
+
+            <h5 class="fw-bold mt-4">Delivery Information</h5>
+            <p class="text-muted">
+                🚚 Lagos & Port Harcourt: <strong>1 week delivery</strong><br>
+                🌍 Nationwide delivery via trusted logistics partners.
+            </p>
+
+            <small class="text-muted d-block mt-3">
+                💬 Every message is replied to within <strong>24 hours</strong>.
+            </small>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-3">Send Us a Message</h4>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <textarea name="message" rows="4" class="form-control" placeholder="Your Message"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100 py-2">
+                            ✉️ Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+

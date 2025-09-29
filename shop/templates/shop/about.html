@@ -1,0 +1,33 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block title %}About Us - Luchi Addiction{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row align-items-center">
+        <!-- Left: Image -->
+        <div class="col-md-5 mb-4">
+            <img src="{% static 'images/photos/about-brand.jpg' %}" alt="Luchi Addiction wigs and extensions" class="img-fluid rounded shadow">
+        </div>
+
+        <!-- Right: Text -->
+        <div class="col-md-7">
+            <h2 class="text-warning mb-4 text-center text-md-start">About Luchi Addiction</h2>
+            <p class="lead">
+                At <strong>Luchi Addiction</strong>, we redefine beauty with premium wigs, HD laces, and luxury extensions.
+            </p>
+            <ul class="list-unstyled">
+                <li>✨ Seamless blend for a natural look</li>
+                <li>✨ Unmatched elegance and comfort</li>
+                <li>✨ Affordable luxury crafted for confidence</li>
+            </ul>
+            <p>
+                Founded with a passion for style and self-expression, every piece is carefully designed to make you feel
+                effortlessly beautiful—whether it’s everyday glam or a special occasion.
+            </p>
+            <p class="fw-bold text-warning">
+                Glow with confidence. Shine in every moment.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

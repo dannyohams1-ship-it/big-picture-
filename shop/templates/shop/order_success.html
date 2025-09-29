@@ -1,0 +1,13 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2 class="text-success mb-4">Order Successful 🎉</h2>
+    <p>Thank you, <strong>{{ order.customer_name }}</strong>!</p>
+    <p>Your order has been placed successfully.</p>
+    <p><strong>Total Paid:</strong> NGN {{ order.total }}</p>
+    <p>We’ll contact you soon via <strong>{{ order.email }}</strong> or <strong>{{ order.phone }}</strong>.</p>
+
+    <a href="/" class="btn btn-warning mt-3">Back to Home</a>
+</div>
+{% endblock %}
+

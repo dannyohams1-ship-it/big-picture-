@@ -1,0 +1,35 @@
+{% extends "shop/base.html" %}
+{% block content %}
+<h1 class="text-center text-warning fw-bold mb-4">Our Products</h1>
+
+<!-- Category Tabs -->
+<ul class="nav nav-tabs mb-4 justify-content-center">
+  <li class="nav-item">
+    <a class="nav-link active" href="/products/wigs/">Wigs & Extensions</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/products/laces/">Laces</a>
+  </li>
+</ul>
+
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm border-0">
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height:300px; object-fit:cover;">
+            <div class="card-body text-center">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.description|truncatewords:15 }}</p>
+                <p class="fw-bold text-success">
+                  {{ product.price|as_currency:request.session.currency }}
+                </p>
+
+                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-dark">Add to Cart</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-muted">No wigs available right now.</p>
+    {% endfor %}
+</div>
+{% endblock %}
