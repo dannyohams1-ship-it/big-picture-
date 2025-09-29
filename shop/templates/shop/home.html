@@ -26,12 +26,17 @@
 <!-- 🌟 BEST SELLERS SECTION -->
 <div class="container my-5">
   <h2 class="text-center fw-bold mb-4" data-aos="fade-up">🌟 Best Sellers</h2>
-  
-  <div class="row g-4">
-    {% for product in best_sellers %}
-      <div class="col-6 col-md-3 col-lg-2">
-        <div class="product-card shadow-lg border-0 position-relative p-3 rounded-4" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:1 }}00">
-          
+
+  <!-- Carousel Wrapper -->
+  <div class="position-relative">
+
+    <!-- Scroll Container -->
+    <div class="best-sellers-scroll d-flex overflow-auto">
+      {% for product in best_sellers %}
+        <div class="product-card shadow-lg border-0 p-3 rounded-4 flex-shrink-0"
+             data-aos="zoom-in"
+             data-aos-delay="{{ forloop.counter0|add:1 }}00">
+
           <!-- Badge -->
           <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-2 rounded-pill px-3 py-2 shadow">
             🔥 Best Seller
@@ -40,7 +45,7 @@
           <!-- Product Image -->
           <div class="product-img-wrapper">
             <a href="{% url 'product_detail' product.id %}">
-              <img src="{{ product.image.url }}" class="img-fluid rounded-4" alt="{{ product.name }}">
+              <img src="{{ product.image.url }}" alt="{{ product.name }}">
             </a>
           </div>
 
@@ -51,7 +56,6 @@
               {{ product.price|as_currency:request.session.currency }}
             </p>
 
-
             <!-- Add to Cart -->
             <form method="post" action="{% url 'add_to_cart' product.id %}">
               {% csrf_token %}
@@ -59,34 +63,66 @@
             </form>
           </div>
         </div>
-      </div>
-    {% empty %}
-      <p class="text-center text-muted">No best sellers added yet.</p>
-    {% endfor %}
+      {% empty %}
+        <p class="text-center text-muted">No best sellers added yet.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Navigation Arrows (desktop only) -->
+    <button class="scroll-btn left d-none d-md-block" onclick="scrollBestSellers(-1)">&#10094;</button>
+    <button class="scroll-btn right d-none d-md-block" onclick="scrollBestSellers(1)">&#10095;</button>
   </div>
 </div>
 
 <!-- 🌟 STYLING -->
 <style>
+/* Horizontal scroll container */
+.best-sellers-scroll {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  gap: 1.5rem;
+  padding-bottom: 1rem;
+}
+.best-sellers-scroll::-webkit-scrollbar {
+  display: none; /* hides scrollbar */
+}
+
+/* Product card uniform sizing */
 .product-card {
   background: rgba(255,255,255,0.85);
   backdrop-filter: blur(15px);
   transition: all 0.3s ease;
+  width: 220px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  position: relative;
 }
 .product-card:hover {
   transform: translateY(-10px);
   box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
+
+/* Product image */
 .product-img-wrapper {
+  width: 100%;
+  height: 220px;
   overflow: hidden;
   border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .product-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   transition: transform 0.4s ease;
 }
 .product-card:hover img {
   transform: scale(1.08);
 }
+
+/* Buttons */
 .btn-gradient {
   background: linear-gradient(135deg, #f7b733, #fc4a1a);
   color: #fff;
@@ -97,16 +133,61 @@
   background: linear-gradient(135deg, #fc4a1a, #f7b733);
   transform: scale(1.05);
 }
+
+/* Arrows */
+.scroll-btn {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 10;
+  opacity: 0;                 /* 👈 hidden by default */
+  transition: opacity 0.3s ease;
+}
+
+/* Show only when hovering over the carousel wrapper */
+.position-relative:hover .scroll-btn {
+  opacity: 1;
+}
+
+.scroll-btn.left { left: -15px; }
+.scroll-btn.right { right: -15px; }
+.scroll-btn:hover { background: rgba(0,0,0,0.8); }
+
 </style>
+
+<!-- 🌟 SCRIPT -->
+<script>
+function scrollBestSellers(direction) {
+  const container = document.querySelector('.best-sellers-scroll');
+  const cardWidth = container.querySelector('.product-card').offsetWidth + 24; // card + gap
+  container.scrollBy({
+    left: direction * cardWidth,
+    behavior: 'smooth'
+  });
+}
+</script>
+
 
 <!-- 🚀 NEW ARRIVALS SECTION -->
 <div class="container my-5">
   <h2 class="text-center fw-bold mb-4" data-aos="fade-up">🚀 New Arrivals</h2>
-  
- <div class="new-scroll">
-  {% for product in new_arrivals %}
-    <div class="new-card p-3 rounded-3 text-center" data-aos="zoom-in-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
-          
+
+  <!-- Carousel Wrapper -->
+  <div class="position-relative">
+
+    <!-- Scroll Container -->
+    <div class="new-scroll d-flex overflow-auto">
+      {% for product in new_arrivals %}
+        <div class="new-card p-3 rounded-3 text-center flex-shrink-0"
+             data-aos="zoom-in-up"
+             data-aos-delay="{{ forloop.counter0|add:1 }}00">
+
           <!-- Product Image -->
           <div class="new-img-wrapper mb-2">
             <a href="{% url 'product_detail' product.id %}">
@@ -126,28 +207,46 @@
             <button type="submit" class="btn-cart w-100">🛒 Add to Cart</button>
           </form>
         </div>
-      </div>
-    {% empty %}
-      <p class="text-center text-muted">No new arrivals yet.</p>
-    {% endfor %}
+      {% empty %}
+        <p class="text-center text-muted">No new arrivals yet.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Navigation Arrows (desktop only) -->
+    <button class="scroll-btn left d-none d-md-block" onclick="scrollNewArrivals(-1)">&#10094;</button>
+    <button class="scroll-btn right d-none d-md-block" onclick="scrollNewArrivals(1)">&#10095;</button>
   </div>
 </div>
 
-<!-- ✅ CLEAN STYLING -->
+<!-- 🚀 STYLING -->
 <style>
+/* Horizontal scroll container */
+.new-scroll {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  gap: 1rem;
+  padding-bottom: 1rem;
+}
+.new-scroll::-webkit-scrollbar { display: none; }
+
+/* Product card uniform sizing */
 .new-card {
   background: #fff;
   border: 1px solid #eee;
   transition: all 0.3s ease;
+  width: 200px;         /* uniform width */
+  flex: 0 0 auto;
+  scroll-snap-align: start;
 }
 .new-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  transform: translateY(-6px);
 }
 
+/* Image wrapper */
 .new-img-wrapper {
   width: 100%;
-  height: 220px; /* desktop standard */
+  height: 220px;
   overflow: hidden;
   border-radius: 8px;
   display: flex;
@@ -157,14 +256,13 @@
 .new-img-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* keeps all images same size */
+  object-fit: cover;
   border-radius: 8px;
   transition: transform 0.3s ease;
 }
-.new-card:hover img {
-  transform: scale(1.05);
-}
+.new-card:hover img { transform: scale(1.05); }
 
+/* Text */
 .new-title {
   font-size: 0.95rem;
   font-weight: 600;
@@ -177,6 +275,7 @@
   color: #d4af37;
 }
 
+/* Cart button */
 .btn-cart {
   margin-top: 6px;
   padding: 8px 12px;
@@ -192,35 +291,48 @@
   color: #000;
 }
 
-.new-scroll {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding-bottom: 12px;
-  -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
+/* Arrows */
+.scroll-btn {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 10;
+  opacity: 0;                 /* 👈 hidden by default */
+  transition: opacity 0.3s ease;
 }
 
-.new-scroll::-webkit-scrollbar {
-  display: none; /* hide scroll bar for cleaner look */
+/* Show only when hovering over the carousel wrapper */
+.position-relative:hover .scroll-btn {
+  opacity: 1;
 }
 
-.new-card {
-  min-width: 200px;   /* width of each product card */
-  flex: 0 0 auto;     /* prevents shrinking */
-  scroll-snap-align: start;
-  background: #fff;
-  border: 1px solid #eee;
-  transition: all 0.3s ease;
-}
+.scroll-btn.left { left: -15px; }
+.scroll-btn.right { right: -15px; }
+.scroll-btn:hover { background: rgba(0,0,0,0.8); }
 
-/* ✅ Mobile optimization */
+/* Mobile optimization */
 @media (max-width: 768px) {
-  .new-img-wrapper {
-    height: 160px; /* compact for phones */
-  }
+  .new-img-wrapper { height: 160px; }
 }
 </style>
+
+<!-- 🚀 SCRIPT -->
+<script>
+function scrollNewArrivals(direction) {
+  const container = document.querySelector('.new-scroll');
+  const cardWidth = container.querySelector('.new-card').offsetWidth + 16; // card + gap
+  container.scrollBy({
+    left: direction * cardWidth,
+    behavior: 'smooth'
+  });
+}
+</script>
 
 <!-- Why Choose Us Section -->
 <div class="container my-5">
