@@ -11,15 +11,25 @@ import os
 import environ
 from django.core.exceptions import ImproperlyConfigured
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+import os
+from pathlib import Path
+
 BASE_DIR = Path(__file__).resolve().parent.parent
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-DATABASES = {
-    "default": env.db("DATABASE_URL", default=f"sqlite:///{os.path.join(BASE_DIR,'db.sqlite3')}")
-}
-
+# Force SQLite for free-tier Render
+if os.getenv("RENDER") == "1":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+else:
+    # Use Postgres if DATABASE_URL exists
+    import dj_database_url
+    DATABASES = {
+        "default": dj_database_url.config(default=os.getenv("DATABASE_URL"))
+    }
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-secret-key") 
 # SECURITY WARNING: don't run with debug turned on in production!
