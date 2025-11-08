@@ -1,11 +1,89 @@
 {% extends "shop/base.html" %}
 {% block content %}
+
 <div class="container my-5">
-  <h2 class="text-warning mb-4 text-center">🔄 Returns & Exchanges</h2>
-  <p class="text-muted text-center">
-    If you’re not satisfied, you can request a return or exchange within  
-    <strong>7 days of delivery</strong>.  
-    Products must be unused and in original condition.
-  </p>
+  <h2 class="text-center mb-5 fw-bold text-warning">↩️ Returns & Exchanges</h2>
+
+  <div class="row g-4">
+
+    <!-- Intro -->
+    <div class="col-12">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4 text-center">
+          <p class="text-muted fs-5 mb-0">
+            We want you to love your purchase. If for any reason you’re not satisfied, our returns process is simple and designed for peace of mind.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Return Window -->
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h4 class="card-title fw-bold text-warning mb-3">🕒 Return Window</h4>
+          <p class="text-muted mb-0">
+            Returns are accepted within <strong>7 days</strong> of delivery if items are unused, lace/tags intact, and in original packaging.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Process -->
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h4 class="card-title fw-bold text-warning mb-3">🛠 How to Return</h4>
+          <ol class="text-muted mb-0">
+            <li>Contact us at <a href="{% url 'shop:contact' %}" class="fw-bold text-warning">Customer Support</a>.</li>
+            <li>Repackage the item securely.</li>
+            <li>Ship via DHL with the return label provided.</li>
+            <li>Refund/store credit processed after inspection.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- Refunds -->
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h4 class="card-title fw-bold text-warning mb-3">💳 Refunds</h4>
+          <p class="text-muted mb-0">
+            Refunds are issued to your original payment method or store credit, within <strong>5–7 business days</strong> after your return is inspected.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Non-Returnable Items -->
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h4 class="card-title fw-bold text-warning mb-3">🚫 Non-Returnable</h4>
+          <ul class="text-muted mb-0">
+            <li>Opened or worn wigs/extensions</li>
+            <li>Custom or made-to-order items</li>
+            <li>Final sale/clearance products</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Support -->
+    <div class="col-12">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4 text-center">
+          <h5 class="fw-bold text-warning mb-2">Need Assistance?</h5>
+          <p class="text-muted mb-0">
+            Our support team is here to help.  
+            Contact us anytime via <a href="{% url 'shop:contact' %}" class="fw-bold text-warning">Customer Support</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
+
 {% endblock %}

@@ -96,7 +96,12 @@ def get_exchange_rates(force_refresh: bool = False):
 def _is_supported(currency: str) -> bool:
     return currency in SUPPORTED_CURRENCIES
 
-def convert_price(amount, from_currency=BASE_CURRENCY, to_currency=BASE_CURRENCY) -> Decimal:
+def convert_price(amount, from_currency=BASE_CURRENCY, to_currency=None, request=None):
+    if request:
+        to_currency = request.session.get("currency", BASE_CURRENCY)
+    if not to_currency:
+        to_currency = BASE_CURRENCY
+
     amount_dec = _to_decimal(amount)
     if from_currency == to_currency:
         return amount_dec.quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
@@ -108,14 +113,10 @@ def convert_price(amount, from_currency=BASE_CURRENCY, to_currency=BASE_CURRENCY
     if not from_rate or not to_rate:
         return amount_dec.quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
 
-    converted = (amount_dec / from_rate * to_rate).quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
-    return converted
+    return (amount_dec / from_rate * to_rate).quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
 
 def format_price(amount, currency: str = BASE_CURRENCY, locale: str | None = None) -> str:
-    """
-    Format a price into a human-friendly string with symbol.
-    Tries Babel if available, otherwise falls back to symbol + grouped number.
-    """
+
     try:
         from babel.numbers import format_currency
 
@@ -137,3 +138,9 @@ def format_price(amount, currency: str = BASE_CURRENCY, locale: str | None = Non
         except Exception:
             # ultimate fallback
             return f"{symbol}0.00"
+
+
+
+def get_current_currency(request):
+    return request.session.get("currency", BASE_CURRENCY)
+

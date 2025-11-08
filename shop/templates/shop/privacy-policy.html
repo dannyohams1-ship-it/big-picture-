@@ -1,10 +1,112 @@
 {% extends "shop/base.html" %}
 {% block content %}
 <div class="container my-5">
-  <h2 class="text-warning mb-4 text-center">🔒 Privacy Policy</h2>
-  <p class="text-muted text-center">
-    Your privacy is important to us. We never share your data with third parties.  
-    Any information collected is used only for order processing and improving your shopping experience.
+
+  <!-- Header -->
+  <h2 class="text-warning fw-bold mb-4 text-center">🔒 Privacy Policy</h2>
+  <p class="text-muted text-center mb-5">
+    Your privacy matters. We are committed to protecting your personal information 
+    and ensuring your shopping experience remains secure and trustworthy.
   </p>
+
+  <div class="row g-4">
+
+    <!-- Data Collection -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title text-warning fw-bold">📋 Information We Collect</h5>
+          <p class="card-text text-muted">
+            We collect only necessary details such as your name, email, phone number, 
+            shipping/billing address, and payment information to process and deliver your orders.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- How We Use Data -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title text-warning fw-bold">⚙️ How We Use Your Information</h5>
+          <p class="card-text text-muted">
+            Your data is used solely for:
+          </p>
+          <ul class="text-muted small">
+            <li>Processing and fulfilling your orders</li>
+            <li>Providing updates on shipping and delivery</li>
+            <li>Improving our services and user experience</li>
+            <li>Customer support when needed</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Third Parties -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title text-warning fw-bold">🤝 Third-Party Services</h5>
+          <p class="card-text text-muted">
+            We partner with trusted payment processors (e.g., Paystack, Stripe) and couriers (DHL, local delivery partners).  
+            These providers only receive the information needed to complete your order securely.  
+            We never sell or trade your data.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Security -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title text-warning fw-bold">🔐 Data Protection</h5>
+          <p class="card-text text-muted">
+            We use industry-standard SSL encryption and security measures to protect your personal data.  
+            Access to your data is strictly limited to authorized personnel.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cookies -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title text-warning fw-bold">🍪 Cookies & Tracking</h5>
+          <p class="card-text text-muted">
+            Our website uses cookies to enhance your browsing experience, remember your preferences, 
+            and personalize recommendations. You may disable cookies in your browser at any time.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Rights -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title text-warning fw-bold">📝 Your Rights</h5>
+          <p class="card-text text-muted">
+            You have the right to access, update, or delete your personal information.  
+            To request changes or removal, please contact our support team.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Contact -->
+  <div class="card border-0 shadow-sm mt-5">
+    <div class="card-body text-center">
+      <h5 class="card-title text-warning fw-bold">📩 Contact Us</h5>
+      <p class="card-text text-muted">
+        If you have any questions regarding this Privacy Policy, please reach out to us at  
+        <a href="mailto:support@example.com" class="fw-bold text-warning">support@example.com</a>.
+      </p>
+    </div>
+  </div>
+
 </div>
 {% endblock %}

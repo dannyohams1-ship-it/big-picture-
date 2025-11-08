@@ -1,0 +1,19 @@
+
+  .why-card {
+    background: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .why-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+  }
+  .icon-circle {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #f7b733, #fc4a1a);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  }

@@ -1,0 +1,14 @@
+.checkout-page {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.checkout-page form {
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+.dhl-logo {
+  width: 100px;
+  opacity: 0.9;
+}

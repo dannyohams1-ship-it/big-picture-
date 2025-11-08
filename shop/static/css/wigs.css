@@ -1,0 +1,162 @@
+
+  /* ---------- GLOBAL ---------- */
+  body {
+    background-color: #fffdf8;
+  }
+  .text-gold {
+    color: #c49b63;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero-banner {
+    background-color: #fff8f0;
+    border-radius: 1rem;
+  }
+
+  /* ---------- FILTER SIDEBAR ---------- */
+  .filter-sidebar {
+    position: sticky;
+    top: 100px;
+    background: #fff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  }
+  .filter-sidebar h5 {
+    font-weight: 600;
+    color: #333;
+  }
+
+  /* ---------- PRODUCT GRID ---------- */
+  .product-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  }
+  .product-card img {
+    transition: transform 0.3s ease;
+  }
+  .product-card:hover img {
+    transform: scale(1.03);
+  }
+
+  /* ---------- BUTTONS ---------- */
+  .btn-dark {
+    background-color: #000;
+    border: none;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+  }
+  .btn-dark:hover {
+    background-color: #222;
+  }
+
+/* ---------- PAGINATION (Scoped for Wigs Page) ---------- */
+#productGridWrapper .pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  margin-top: 2rem;
+}
+
+#productGridWrapper .pagination .page-link {
+  color: #222;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+#productGridWrapper .pagination .page-link:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+#productGridWrapper .pagination .page-item.active .page-link {
+  background-color: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+#productGridWrapper .pagination .page-item.disabled .page-link {
+  background: transparent;
+  color: #aaa;
+  border: none;
+  box-shadow: none;
+  cursor: default;
+}
+
+
+.elegant-dropdown {
+  min-width: 190px !important;
+  height: 45px !important;
+  padding: 0 2rem 0 1rem !important;
+  border-radius: 50px !important;
+  border: 1px solid #e5e0d8 !important;
+  background-color: #ffffff !important;
+  color: #333 !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  outline: none !important;
+
+  /* Custom arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'%3E%3Cpath fill='%23c49b63' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat !important;
+  background-position: right 0.85rem center !important;
+  background-size: 14px 14px !important;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+.elegant-dropdown:hover,
+.elegant-dropdown:focus {
+  border-color: #c49b63 !important;
+  box-shadow: 0 0 0 0.25rem rgba(196, 155, 99, 0.25) !important;
+  background-color: #fffdf8 !important;
+}
+
+.elegant-dropdown option {
+  color: #333 !important;
+  background-color: #ffffff !important;
+  font-weight: 500 !important;
+}
+select::-ms-expand { display: none; }
+
+#wigFAQ .accordion-button {
+  background: #fff;
+  color: #222;
+  box-shadow: none;
+  transition: all 0.3s ease;
+}
+
+#wigFAQ .accordion-button:not(.collapsed) {
+  color: #d19a6e;
+  background: #fff7f2;
+  border-bottom: 1px solid #f5d8c3;
+}
+
+#wigFAQ .accordion-item {
+  border: none;
+  margin-bottom: 10px;
+}
+
+#wigFAQ .accordion-body {
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+

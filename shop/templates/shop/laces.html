@@ -1,35 +1,116 @@
 {% extends "shop/base.html" %}
+{% load static %}
+{% load currency_tags %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/lace.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1 class="text-center text-warning fw-bold mb-4">Our Products</h1>
 
-<!-- Category Tabs -->
-<ul class="nav nav-tabs mb-4 justify-content-center">
-  <li class="nav-item">
-    <a class="nav-link" href="/products/wigs/">Wigs & Extensions</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link active" href="/products/laces/">Laces</a>
-  </li>
-</ul>
-
-<div class="row">
-    {% for product in products %}
-    <div class="col-md-4 mb-4">
-        <div class="card shadow-sm border-0">
-            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height:300px; object-fit:cover;">
-            <div class="card-body text-center">
-                <h5 class="card-title">{{ product.name }}</h5>
-                <p class="card-text">{{ product.description|truncatewords:15 }}</p>
-                <p class="fw-bold text-success">
-                  {{ product.price|as_currency:request.session.currency }}
-                </p>
-
-                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-dark">Add to Cart</a>
-            </div>
+<!-- HERO SECTION -->
+<section class="py-5 text-center bg-light position-relative" style="background: linear-gradient(to right, #fff8f0, #ffffff);">
+  <div class="container">
+    <h1 class="fw-bold text-dark mb-2">Premium Lace Closures & Frontals</h1>
+    <p class="text-muted mb-0">Designed to melt perfectly for a seamless, natural finish.</p>
+  </div>
+</section>
+<div class="container my-5">
+  <div class="row">
+    
+    <!-- Sidebar Filters -->
+    <aside class="col-lg-3 mb-4">
+      <form id="filterForm" class="filter-sidebar bg-light p-3 rounded shadow-sm" method="get">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0">Filters</h5>
+          <a href="{% url 'shop:laces' %}" class="text-decoration-none small text-muted">Clear All</a>
         </div>
-    </div>
-    {% empty %}
-    <p class="text-muted">No laces available right now.</p>
+
+        <!-- Accordion Filters -->
+        <div class="accordion" id="filterAccordion">
+
+          <!-- Lace Type -->
+          <div class="accordion-item border-0 border-bottom">
+            <h6 class="accordion-header">
+              <button class="accordion-button collapsed fw-semibold" type="button"
+                      data-bs-toggle="collapse" data-bs-target="#filterLaceType">
+                Lace Type
+              </button>
+            </h6>
+            <div id="filterLaceType" class="accordion-collapse collapse show">
+              <div class="accordion-body">
+                
+                <div class="form-check">
+                  <input class="form-check-input filter-checkbox" type="checkbox" name="lace_type"
+                         value="HD Lace" id="hdLace"
+                         {% if 'HD Lace' in lace_selected %}checked{% endif %}>
+                  <label class="form-check-label" for="hdLace">HD Lace</label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input filter-checkbox" type="checkbox" name="lace_type"
+                         value="Swiss Lace" id="swissLace"
+                         {% if 'Swiss Lace' in lace_selected %}checked{% endif %}>
+                  <label class="form-check-label" for="swissLace">Swiss Lace</label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input filter-checkbox" type="checkbox" name="lace_type"
+                         value="Transparent Lace" id="transparentLace"
+                         {% if 'Transparent Lace' in lace_selected %}checked{% endif %}>
+                  <label class="form-check-label" for="transparentLace">Transparent Lace</label>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </aside>
+
+
+    <!-- Right Section (Product Grid placeholder for next block) -->
+    <section class="col-lg-9">
+      <!-- Sort Bar -->
+<div class="d-flex justify-content-between align-items-center mb-4 sorting-bar">
+  <p class="mb-0 small text-muted">{{ page_obj.paginator.count }} items found</p>
+
+  <form id="sortForm" method="get" class="d-flex align-items-center">
+    <!-- Preserve existing query params (except sort) -->
+    {% for key, value in request.GET.items %}
+      {% if key != 'sort' %}
+        <input type="hidden" name="{{ key }}" value="{{ value }}">
+      {% endif %}
     {% endfor %}
+
+    <select name="sort" id="sortSelect"
+        class="form-select fw-semibold text-muted elegant-dropdown"
+        onchange="this.form.submit()">
+
+      <option value="" {% if not request.GET.sort %}selected{% endif %}>Default</option>
+      <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Price: Low → High</option>
+      <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Price: High → Low</option>
+      <option value="rating_desc" {% if request.GET.sort == 'rating_desc' %}selected{% endif %}>Top Rated</option>
+      <option value="rating_asc" {% if request.GET.sort == 'rating_asc' %}selected{% endif %}>Lowest Rated</option>
+      <option value="new_arrivals" {% if request.GET.sort == 'new_arrivals' %}selected{% endif %}>New Arrivals</option>
+    </select>
+  </form>
 </div>
+
+  <div id="productGridWrapper">
+    {% include 'shop/includes/product_grid.html' %}
+  </div>
+</section>
+
+<section class="py-5 bg-light mt-5 border-top">
+  {% include 'shop/includes/lacesfaq.html' %}
+</section>
+
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script src="{% static 'js/laces.js' %}"></script>
 {% endblock %}

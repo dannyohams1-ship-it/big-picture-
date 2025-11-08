@@ -2,26 +2,79 @@
 {% load static %}
 {% load currency_tags %}
 
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+  <link rel="stylesheet" href="{% static 'css/best_sellers.css' %}">
+  <link rel="stylesheet" href="{% static 'css/new_arrivals.css' %}">
+  <link rel="stylesheet" href="{% static 'css/why_choose_us.css' %}">
+  <link rel="stylesheet" href="{% static 'css/testimonials.css' %}">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-<div class="hero-section position-relative">
-  <!-- Background Image -->
-  <img src="{% static 'shop/images/background.jpg' %}" 
-       alt="Luxury Hair Extensions" 
-       class="w-100 d-block hero-image" 
-       style="height: 85vh; object-fit: cover;">
 
-  <!-- Overlay -->
-  <div class="overlay position-absolute top-0 start-0 w-100 h-100" 
-       style="background: rgba(0,0,0,0.45);"></div>
+<section id="heroCarousel" class="carousel slide position-relative" data-bs-ride="carousel" data-bs-interval="4000">
 
-  <!-- Hero Content -->
-  <div class="hero-content position-absolute top-50 start-50 translate-middle text-center text-light px-3">
-    <h1 class="fw-bold display-4 text-warning">Luchi Addiction</h1>
-    <p class="lead fw-semibold mb-3">Premium Wigs · HD Laces · Hair Extensions</p>
-    <p class="fst-italic fw-light mb-4">✨ Confidence in Every Strand ✨</p>
-    <a href="/products/" class="btn btn-lg btn-warning fw-semibold shadow">Shop Now</a>
+  <div class="carousel-inner">
+
+    <!-- ===== Slide 1: Brand Hero ===== -->
+    <div class="carousel-item active">
+      <img src="{% static 'shop/images/background.jpg' %}" 
+           alt="Luchi Addiction" 
+           class="w-100 d-block hero-image" loading="lazy">
+      <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div>
+
+    <div class="hero-content position-absolute text-center text-light px-3">
+          <h1 class="fw-bold hero-heading text-gold mb-3 animate-fade">LUCHI ADDICTION </h1>
+          <p class="hero-tagline fw-semibold mb-2">Transform Your Look. Own Your Confidence.</p>
+          <p class="hero-subtext fst-italic fw-light mb-4">Handcrafted luxury wigs and HD laces for effortless, everyday elegance.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="/products/" class="btn btn-gold fw-semibold shadow px-4 py-2">Shop Now</a>
+            <a href="/products/" class="btn btn-outline-gold fw-semibold shadow px-4 py-2">View Collection</a>
+        </div>
+    </div>
+
+
+    <!-- ===== Slide 2: Best Seller Pixie ===== -->
+    <div class="carousel-item">
+      <img src="{% static 'shop/images/pixie.jpg' %}" 
+           alt="Best Seller Pixie Wig" 
+           class="w-100 d-block hero-image" loading="lazy">
+      <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div>
+
+      <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 text-light">
+        <h1 class="fw-bold text-gold mb-3">SHOP OUR BEST SELLER PIXIE</h1>
+        <p class="fw-light mb-4 fst-italic">Flawless short styles designed to turn heads effortlessly.</p>
+        <a href="/products/wigs/" class="btn btn-gold fw-semibold shadow px-4 py-2">Shop Now</a>
+      </div>
+    </div>
+
+    <!-- ===== Slide 3: Lace Collection ===== -->
+    <div class="carousel-item">
+      <img src="{% static 'shop/images/lace-collection.jpg' %}" 
+           alt="Luxury Lace Collection" 
+           class="w-100 d-block hero-image" loading="lazy">
+      <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div>
+
+      <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 text-light">
+        <h1 class="fw-bold text-gold mb-3">DISCOVER OUR LUXURY LACE COLLECTION</h1>
+        <p class="fw-light mb-4 fst-italic">HD lace perfection — seamless, natural, and effortlessly elegant.</p>
+        <a href="/products/" class="btn btn-gold fw-semibold shadow px-4 py-2">Explore Collection</a>
+      </div>
+    </div>
+
   </div>
-</div>
+
+  <!-- Carousel Controls -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+  </button>
+</section>
+
 
 <!-- 🌟 BEST SELLERS SECTION -->
 <div class="container my-5">
@@ -44,8 +97,8 @@
 
           <!-- Product Image -->
           <div class="product-img-wrapper">
-            <a href="{% url 'product_detail' product.id %}">
-              <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            <a href="{% url 'shop:product_detail' product.id %}">
+              <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
             </a>
           </div>
 
@@ -57,7 +110,7 @@
             </p>
 
             <!-- Add to Cart -->
-            <form method="post" action="{% url 'add_to_cart' product.id %}">
+            <form method="post" action="{% url 'shop:add_to_cart' product.id %}">
               {% csrf_token %}
               <button type="submit" class="btn btn-gradient w-100 fw-bold">Add to Cart</button>
             </form>
@@ -74,265 +127,8 @@
   </div>
 </div>
 
-<!-- 🌟 STYLING -->
-<style>
-/* Horizontal scroll container */
-.best-sellers-scroll {
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  gap: 1.5rem;
-  padding-bottom: 1rem;
-}
-.best-sellers-scroll::-webkit-scrollbar {
-  display: none; /* hides scrollbar */
-}
 
-/* Product card uniform sizing */
-.product-card {
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(15px);
-  transition: all 0.3s ease;
-  width: 220px;
-  flex: 0 0 auto;
-  scroll-snap-align: start;
-  position: relative;
-}
-.product-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-}
-
-/* Product image */
-.product-img-wrapper {
-  width: 100%;
-  height: 220px;
-  overflow: hidden;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.product-img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-.product-card:hover img {
-  transform: scale(1.08);
-}
-
-/* Buttons */
-.btn-gradient {
-  background: linear-gradient(135deg, #f7b733, #fc4a1a);
-  color: #fff;
-  border: none;
-  transition: 0.3s ease;
-}
-.btn-gradient:hover {
-  background: linear-gradient(135deg, #fc4a1a, #f7b733);
-  transform: scale(1.05);
-}
-
-/* Arrows */
-.scroll-btn {
-  position: absolute;
-  top: 40%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.5);
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  cursor: pointer;
-  border-radius: 50%;
-  z-index: 10;
-  opacity: 0;                 /* 👈 hidden by default */
-  transition: opacity 0.3s ease;
-}
-
-/* Show only when hovering over the carousel wrapper */
-.position-relative:hover .scroll-btn {
-  opacity: 1;
-}
-
-.scroll-btn.left { left: -15px; }
-.scroll-btn.right { right: -15px; }
-.scroll-btn:hover { background: rgba(0,0,0,0.8); }
-
-</style>
-
-<!-- 🌟 SCRIPT -->
-<script>
-function scrollBestSellers(direction) {
-  const container = document.querySelector('.best-sellers-scroll');
-  const cardWidth = container.querySelector('.product-card').offsetWidth + 24; // card + gap
-  container.scrollBy({
-    left: direction * cardWidth,
-    behavior: 'smooth'
-  });
-}
-</script>
-
-
-<!-- 🚀 NEW ARRIVALS SECTION -->
-<div class="container my-5">
-  <h2 class="text-center fw-bold mb-4" data-aos="fade-up">🚀 New Arrivals</h2>
-
-  <!-- Carousel Wrapper -->
-  <div class="position-relative">
-
-    <!-- Scroll Container -->
-    <div class="new-scroll d-flex overflow-auto">
-      {% for product in new_arrivals %}
-        <div class="new-card p-3 rounded-3 text-center flex-shrink-0"
-             data-aos="zoom-in-up"
-             data-aos-delay="{{ forloop.counter0|add:1 }}00">
-
-          <!-- Product Image -->
-          <div class="new-img-wrapper mb-2">
-            <a href="{% url 'product_detail' product.id %}">
-              <img src="{{ product.image.url }}" alt="{{ product.name }}">
-            </a>
-          </div>
-
-          <!-- Product Info -->
-          <h6 class="new-title">{{ product.name }}</h6>
-          <p class="new-price">
-            {{ product.price|as_currency:request.session.currency }}
-          </p>
-
-          <!-- Add to Cart -->
-          <form method="post" action="{% url 'add_to_cart' product.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn-cart w-100">🛒 Add to Cart</button>
-          </form>
-        </div>
-      {% empty %}
-        <p class="text-center text-muted">No new arrivals yet.</p>
-      {% endfor %}
-    </div>
-
-    <!-- Navigation Arrows (desktop only) -->
-    <button class="scroll-btn left d-none d-md-block" onclick="scrollNewArrivals(-1)">&#10094;</button>
-    <button class="scroll-btn right d-none d-md-block" onclick="scrollNewArrivals(1)">&#10095;</button>
-  </div>
-</div>
-
-<!-- 🚀 STYLING -->
-<style>
-/* Horizontal scroll container */
-.new-scroll {
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  gap: 1rem;
-  padding-bottom: 1rem;
-}
-.new-scroll::-webkit-scrollbar { display: none; }
-
-/* Product card uniform sizing */
-.new-card {
-  background: #fff;
-  border: 1px solid #eee;
-  transition: all 0.3s ease;
-  width: 200px;         /* uniform width */
-  flex: 0 0 auto;
-  scroll-snap-align: start;
-}
-.new-card:hover {
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-  transform: translateY(-6px);
-}
-
-/* Image wrapper */
-.new-img-wrapper {
-  width: 100%;
-  height: 220px;
-  overflow: hidden;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.new-img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 8px;
-  transition: transform 0.3s ease;
-}
-.new-card:hover img { transform: scale(1.05); }
-
-/* Text */
-.new-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #333;
-  margin: 6px 0 2px;
-}
-.new-price {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #d4af37;
-}
-
-/* Cart button */
-.btn-cart {
-  margin-top: 6px;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  background: #000;
-  color: #fff;
-  font-size: 0.9rem;
-  transition: background 0.3s ease;
-}
-.btn-cart:hover {
-  background: #d4af37;
-  color: #000;
-}
-
-/* Arrows */
-.scroll-btn {
-  position: absolute;
-  top: 40%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.5);
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  cursor: pointer;
-  border-radius: 50%;
-  z-index: 10;
-  opacity: 0;                 /* 👈 hidden by default */
-  transition: opacity 0.3s ease;
-}
-
-/* Show only when hovering over the carousel wrapper */
-.position-relative:hover .scroll-btn {
-  opacity: 1;
-}
-
-.scroll-btn.left { left: -15px; }
-.scroll-btn.right { right: -15px; }
-.scroll-btn:hover { background: rgba(0,0,0,0.8); }
-
-/* Mobile optimization */
-@media (max-width: 768px) {
-  .new-img-wrapper { height: 160px; }
-}
-</style>
-
-<!-- 🚀 SCRIPT -->
-<script>
-function scrollNewArrivals(direction) {
-  const container = document.querySelector('.new-scroll');
-  const cardWidth = container.querySelector('.new-card').offsetWidth + 16; // card + gap
-  container.scrollBy({
-    left: direction * cardWidth,
-    behavior: 'smooth'
-  });
-}
-</script>
+{% include 'shop/includes/new_arrivals.html' %}
 
 <!-- Why Choose Us Section -->
 <div class="container my-5">
@@ -386,37 +182,6 @@ function scrollNewArrivals(direction) {
   </div>
 </div>
 
-<!-- Custom CSS -->
-<style>
-  .why-card {
-    background: #fff;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .why-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-  }
-  .icon-circle {
-    width: 70px;
-    height: 70px;
-    background: linear-gradient(135deg, #f7b733, #fc4a1a);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-  }
-</style>
-
-<!-- Scroll Animation (AOS) -->
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-  AOS.init({
-    duration: 1000,
-    once: true
-  });
-</script>
 
 <h2 class="text-center my-4">Reviews From Our Customers </h2>
 
@@ -494,59 +259,13 @@ function scrollNewArrivals(direction) {
   </div>
 </div>
 
-<!-- Custom CSS -->
-<style>
-  /* Mini carousel images - tiny thumbnails */
-  .testimonial-img {
-    width: 100px;   /* thumbnail size */
-    height: auto;   /* keep aspect ratio */
-    margin: 0 auto; /* center in carousel */
-    cursor: pointer;
-  }
+{% endblock %}
 
-</style>
-
-<!-- JavaScript -->
-<script>
-  // Sync mini carousel click → open modal at same slide
-  document.querySelectorAll(".testimonial-img").forEach((img, index) => {
-    img.addEventListener("click", function () {
-      let modal = new bootstrap.Modal(document.getElementById("testimonialModal"));
-      modal.show();
-
-      let modalCarousel = bootstrap.Carousel.getOrCreateInstance(document.getElementById("testimonialModalCarousel"));
-      modalCarousel.to(index);
-    });
-  });
-
-  // Pause/resume on hold (both carousels)
-  function addPauseOnHold(carouselId) {
-    let carouselEl = document.querySelector(carouselId);
-    let carouselInstance = bootstrap.Carousel.getOrCreateInstance(carouselEl);
-
-    let pressTimer;
-    carouselEl.addEventListener("mousedown", () => {
-      pressTimer = setTimeout(() => carouselInstance.pause(), 200);
-    });
-    carouselEl.addEventListener("mouseup", () => {
-      clearTimeout(pressTimer);
-      carouselInstance.cycle();
-    });
-
-    // For touch devices
-    carouselEl.addEventListener("touchstart", () => {
-      pressTimer = setTimeout(() => carouselInstance.pause(), 200);
-    });
-    carouselEl.addEventListener("touchend", () => {
-      clearTimeout(pressTimer);
-      carouselInstance.cycle();
-    });
-  }
-
-  addPauseOnHold("#testimonialCarousel");
-  addPauseOnHold("#testimonialModalCarousel");
-</script>
-
-    ...
-</div>
+{% block extra_js %}
+  <script src="{% static 'js/home.js' %}"></script>
+  <script src="{% static 'js/best_sellers.js' %}"></script>
+  <script src="{% static 'js/new_arrivals.js' %}"></script>
+  <script src="{% static 'js/testimonials.js' %}"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init({ duration: 1000, once: true });</script>
 {% endblock %}

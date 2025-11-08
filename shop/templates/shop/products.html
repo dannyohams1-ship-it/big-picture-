@@ -1,181 +1,54 @@
 {% extends "shop/base.html" %}
 {% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+{% endblock %}
+
+
 {% block content %}
-{% load static currency_tags %}
+<!-- Header / hero for the collections page -->
+<div class="collections-hero">
+  <h1 class="text-gold fw-bold">
+    {{ page_title|default:"Our Products" }}
+  </h1>
+  <p>
+    Explore luxurious wigs, laces, and more — crafted for elegance and confidence.
+  </p>
+</div>
 
-<div class="container mt-5">
-    <h1 class="text-center text-warning fw-bold mb-3">Our Collection</h1>
-    <p class="text-center mb-5 text-muted">
-        Discover premium wigs, laces, and extensions crafted for elegance
-    </p>
+<!-- Collections list (each category becomes a wide banner) -->
+<div class="collections-list">
+  {% for key, label in categories.items %}
+  {% if key == 'wigs' %}
+    {% static 'images/collections/wigs.png' as bg %}
+  {% elif key == 'laces' %}
+    {% static 'images/collections/laces.png' as bg %}
+  {% else %}
+    {% static 'images/collections/default.jpg' as bg %}
+  {% endif %}
 
-    <!-- Tabs for categories -->
-    <ul class="nav nav-tabs justify-content-center mb-4" id="productTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active fw-semibold" id="wigs-tab"
-                    data-bs-toggle="tab" data-bs-target="#wigs"
-                    type="button" role="tab">
-                Wigs & Extensions
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link fw-semibold" id="laces-tab"
-                    data-bs-toggle="tab" data-bs-target="#laces"
-                    type="button" role="tab">
-                Laces
-            </button>
-        </li>
-    </ul>
+    <section class="collection-section" aria-label="{{ label }}">
+      <div class="collection-bg" style="background-image: url('{{ bg }}');"></div>
+      <div class="collection-dim" aria-hidden="true"></div>
 
-    <!-- Tab Content -->
-    <div class="tab-content" id="productTabsContent">
+      <div class="collection-overlay">
+        <div class="collection-content">
+          <h2 class="collection-title">{{ label }}</h2>
+          <p class="collection-tagline">
+            {{ "Discover our premium " }}{{ label|lower }} {{ "collection" }}
+          </p>
 
-        <!-- Wigs Tab -->
-        <div class="tab-pane fade show active" id="wigs" role="tabpanel">
-            <div class="row">
-                {% for product in products_wigs %}
-                <div class="col-6 col-md-4 col-lg-3 mb-4">
-                    <div class="card product-card shadow-sm border-0 h-100">
-
-                        <!-- Product Image Wrapper -->
-                        <div class="product-image-wrapper position-relative">
-                            <a href="{% url 'product_detail' product.id %}">
-                                <!-- Main image -->
-                                {% if product.image %}
-                                    <img src="{{ product.image.url }}"
-                                         class="card-img-top product-img main-img"
-                                         alt="{{ product.name }}">
-                                {% else %}
-                                    <img src="https://via.placeholder.com/300x300.png?text=No+Image"
-                                         class="card-img-top product-img main-img"
-                                         alt="No Image">
-                                {% endif %}
-
-                                <!-- Hover image -->
-                                {% if product.images.first %}
-                                    <img src="{{ product.images.first.image.url }}"
-                                         class="card-img-top product-img hover-img"
-                                         alt="{{ product.name }}">
-                                {% endif %}
-                            </a>
-
-                            <!-- Mobile Thumbnails -->
-                            {% if product.image or product.images.all %}
-                            <div class="variant-thumbs d-flex justify-content-center mt-2 d-md-none">
-                                {% if product.image %}
-                                    <img src="{{ product.image.url }}"
-                                         class="variant-thumb active"
-                                         onclick="switchImage(this, '{{ product.image.url }}')">
-                                {% endif %}
-                                {% for img in product.images.all %}
-                                    <img src="{{ img.image.url }}"
-                                         class="variant-thumb"
-                                         onclick="switchImage(this, '{{ img.image.url }}')">
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                        </div>
-
-                        <!-- Product Info -->
-                        <div class="card-body text-center">
-                            <h6 class="fw-bold">{{ product.name }}</h6>
-                            <p class="text-muted small">
-                                {{ product.price|as_currency:request.session.currency }}
-                            </p>
-                        </div>
-
-                        <!-- Add to Cart -->
-                        <div class="card-footer bg-white border-0 text-center pt-0">
-                            <form method="post" action="{% url 'add_to_cart' product.id %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="quantity" value="1">
-                                <button type="submit" class="btn btn-dark w-100 rounded-pill py-2">
-                                    🛒 Add to Cart
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <p class="text-center text-muted">No wigs available yet.</p>
-                {% endfor %}
-            </div>
+          <a href="{% url 'shop:'|add:key %}" class="collection-cta" role="button">
+            View Collection
+          </a>
         </div>
+      </div>
+    </section>
 
-        <!-- Laces Tab -->
-        <div class="tab-pane fade" id="laces" role="tabpanel">
-            <div class="row">
-                {% for product in products_laces %}
-                <div class="col-6 col-md-4 col-lg-3 mb-4">
-                    <div class="card product-card shadow-sm border-0 h-100">
-
-                        <!-- Product Image Wrapper -->
-                        <div class="product-image-wrapper position-relative">
-                            <a href="{% url 'product_detail' product.id %}">
-                                {% if product.image %}
-                                    <img src="{{ product.image.url }}"
-                                         class="card-img-top product-img main-img"
-                                         alt="{{ product.name }}">
-                                {% else %}
-                                    <img src="https://via.placeholder.com/300x300.png?text=No+Image"
-                                         class="card-img-top product-img main-img"
-                                         alt="No Image">
-                                {% endif %}
-
-                                <!-- Hover image -->
-                                {% if product.images.all.count > 0 %}
-                                    {% with product.images.all|first as hover_img %}
-                                        <img src="{{ hover_img.image.url }}"
-                                             class="card-img-top product-img hover-img"
-                                             alt="{{ product.name }}">
-                                    {% endwith %}
-                                {% endif %}
-                            </a>
-                        </div>
-
-                        <!-- Thumbnails -->
-                        {% if product.images.all.count > 0 %}
-                        <div class="variant-thumbs d-flex justify-content-center flex-wrap mt-2 d-md-none">
-                            {% if product.image %}
-                                <img src="{{ product.image.url }}"
-                                     class="variant-thumb active"
-                                     onclick="switchImage(this, '{{ product.image.url }}')">
-                            {% endif %}
-                            {% for img in product.images.all %}
-                                <img src="{{ img.image.url }}"
-                                     class="variant-thumb"
-                                     onclick="switchImage(this, '{{ img.image.url }}')">
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-
-                        <!-- Product Info -->
-                        <div class="card-body text-center">
-                            <h6 class="fw-bold">{{ product.name }}</h6>
-                            <p class="text-muted small">
-                                {{ product.price|as_currency:request.session.currency }}
-                            </p>
-                        </div>
-
-                        <!-- Add to Cart -->
-                        <div class="card-footer bg-white border-0 text-center pt-0">
-                            <form method="post" action="{% url 'add_to_cart' product.id %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="quantity" value="1">
-                                <button type="submit" class="btn btn-dark w-100 rounded-pill py-2">
-                                    🛒 Add to Cart
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <p class="text-center text-muted">No laces available yet.</p>
-                {% endfor %}
-            </div>
-        </div>
-
-    </div>
+  {% empty %}
+    <p class="text-center" style="color:#bfbfbf;">No collections available yet.</p>
+  {% endfor %}
 </div>
 
 {% endblock %}

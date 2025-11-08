@@ -1,0 +1,39 @@
+.hero-image {
+  height: 90vh;
+  object-fit: cover;
+}
+
+.overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.text-gold {
+  color: #d4af37;
+}
+
+.btn-gold {
+  background-color: #d4af37;
+  color: #000;
+  border: none;
+  transition: 0.3s;
+}
+
+.btn-gold:hover {
+  background-color: #b8962e;
+  color: #fff;
+}
+
+.btn-outline-gold {
+  color: #d4af37;
+  border: 1.5px solid #d4af37;
+}
+
+.btn-outline-gold:hover {
+  background-color: #d4af37;
+  color: #000;
+}
+
+.carousel-caption {
+  max-width: 800px;
+  margin: 0 auto;
+}

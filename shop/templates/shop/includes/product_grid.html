@@ -1,0 +1,139 @@
+{% load currency_tags %}
+
+<!-- Product Grid -->
+<div class="row g-4" id="productGrid">
+  {% for product in products %}
+    <div class="col-6 col-md-4 col-lg-3">
+      <div class="card border-0 shadow-sm h-100 product-card">
+        <div class="ratio ratio-1x1 overflow-hidden rounded-top">
+          <a href="{% url 'shop:product_detail' product.id %}">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid object-fit-cover w-100 h-100">
+            {% else %}
+              <img src="https://via.placeholder.com/300x300.png?text=No+Image"
+                   alt="No Image" class="img-fluid object-fit-cover w-100 h-100">
+            {% endif %}
+          </a>
+        </div>
+
+        <div class="card-body text-center">
+          <h6 class="fw-semibold mb-1">{{ product.name }}</h6>
+          <p class="text-gold fw-bold mb-1">{{ product.price|as_currency:request.session.currency }}</p>
+
+          {% if product.stock > 5 %}
+            <small class="text-success">✔ In Stock</small>
+          {% elif product.stock > 0 %}
+            <small class="text-danger">⚠ Only {{ product.stock }} left!</small>
+          {% else %}
+            <small class="text-secondary">❌ Out of Stock</small>
+          {% endif %}
+        </div>
+
+                <!-- Rating and Reviews -->
+        <div class="d-flex justify-content-center align-items-center mb-2">
+          {% if product.review_count > 0 %}
+            {% for i in "12345" %}
+              {% if forloop.counter <= product.avg_rating|default:0 %}
+                <i class="bi bi-star-fill text-warning"></i>
+              {% elif forloop.counter < product.avg_rating|add:1 %}
+                <i class="bi bi-star-half text-warning"></i>
+              {% else %}
+                <i class="bi bi-star text-secondary"></i>
+              {% endif %}
+            {% endfor %}
+            <small class="ms-1 text-muted fw-semibold">
+              {{ product.review_count }} Review{{ product.review_count|pluralize }}
+            </small>
+          {% else %}
+            {% for i in "12345" %}
+              <i class="bi bi-star text-muted" style="opacity: 0.3;"></i>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+        <div class="card-footer bg-white border-0 text-center pt-0">
+          {% if product.stock > 0 %}
+            <form method="post" action="{% url 'shop:add_to_cart' product.id %}">
+              {% csrf_token %}
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="btn btn-dark w-100 rounded-pill py-2">
+                🛒 Add to Cart
+              </button>
+            </form>
+          {% else %}
+            <button class="btn btn-secondary w-100 rounded-pill py-2" disabled>
+              ❌ Out of Stock
+            </button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-center text-muted">No products available yet.</p>
+  {% endfor %}
+</div>
+
+
+{% if is_paginated %}
+  <nav aria-label="Product pagination" class="mt-5">
+    <ul class="pagination justify-content-center">
+      
+      <!-- Previous -->
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link rounded-circle shadow-sm"
+             href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+             aria-label="Previous">
+            &laquo;
+          </a>
+        </li>
+      {% endif %}
+      
+      <!-- Page numbers -->
+      {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+          <li class="page-item active">
+            <span class="page-link rounded-circle shadow-sm">{{ num }}</span>
+          </li>
+
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <li class="page-item">
+            <a class="page-link rounded-circle shadow-sm"
+               href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+              {{ num }}
+            </a>
+          </li>
+
+        {% elif num == 1 %}
+          <li class="page-item">
+            <a class="page-link rounded-circle shadow-sm" href="?page=1">1</a>
+          </li>
+          {% if page_obj.number > 4 %}
+            <li class="page-item disabled"><span class="page-link">...</span></li>
+          {% endif %}
+
+        {% elif num == page_obj.paginator.num_pages %}
+          {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %}
+            <li class="page-item disabled"><span class="page-link">...</span></li>
+          {% endif %}
+          <li class="page-item">
+            <a class="page-link rounded-circle shadow-sm"
+               href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      
+      <!-- Next -->
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link rounded-circle shadow-sm"
+             href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+             aria-label="Next">
+            &raquo;
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endif %}

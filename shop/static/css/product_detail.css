@@ -1,0 +1,103 @@
+:root {
+  --gold: #d4af37;
+  --faint: #f9f7f4;
+}
+.serif { font-family: "Playfair Display", serif; } /* include font in base if desired */
+.text-gold { color: var(--gold); }
+.bg-faint { background: var(--faint); }
+.hero-image { min-height: 460px; }
+.thumb-img { height:64px; width:auto; object-fit:cover; border-radius:6px; }
+.variant-pill { border-radius:999px; padding: .45rem .9rem; background: #fff; border:1px solid #e6e6e6; }
+.variant-pill.active { background: #000; color:#fff; border-color:#000; }
+.btn-outline-gold { border:1px solid var(--gold); color:var(--gold); background:transparent; }
+.quick-facts .fact { min-width:120px; }
+.brand-img { width:56px; height:56px; object-fit:cover; }
+#sticky-cta { z-index:1200; }
+@media (min-width:992px) {
+  #sticky-cta { display:none !important; }
+}
+
+:root {
+  --gold: #d4af37;
+  --offwhite: #f9f9f9;
+}
+.bg-offwhite { background-color: var(--offwhite); }
+.btn-outline-gold {
+  border: 1.5px solid var(--gold);
+  color: var(--gold);
+}
+.btn-outline-gold:hover {
+  background: var(--gold);
+  color: #000;
+}
+.variant-btn {
+  border: 1px solid #ccc;
+  background: #fff;
+  padding: 0.4rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.variant-btn:hover, .variant-btn.active {
+  border-color: var(--gold);
+  background-color: var(--gold);
+  color: #000;
+}
+.nav-tabs .nav-link.active {
+  border-color: var(--gold) var(--gold) transparent;
+  color: #000;
+  font-weight: 600;
+}
+.border-gold { border-color: var(--gold) !important; }
+.hover-scale {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-scale:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+.text-gold {
+  color: #d4af37;
+}
+.object-fit-cover {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+.transition {
+  transition: transform 0.3s ease;
+}
+.transition:hover {
+  transform: scale(1.05);
+}
+
+/* === Carousel Fixes === */
+.carousel-item {
+  position: relative; /* make it a positioning context */
+  height: 100%; 
+}
+
+/* Ensure carousel-inner doesn’t clip overlays */
+.carousel-inner {
+  position: relative;
+  overflow: hidden; /* keep the image and caption contained */
+}
+
+/* Image fills the space */
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Caption overlay */
+.carousel-item .position-absolute {
+  z-index: 2;
+}
+
+/* Optional: ensure the gradient caption always shows above image */
+.carousel-item .position-absolute h5 {
+  color: #fff;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}

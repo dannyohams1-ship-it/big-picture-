@@ -1,10 +1,90 @@
 {% extends "shop/base.html" %}
 {% block content %}
+
 <div class="container my-5">
-  <h2 class="text-warning mb-4 text-center">🚚 Shipping & Delivery</h2>
-  <p class="text-muted text-center">
-    We deliver within <strong>Lagos & Port Harcourt in 1 week</strong>.  
-    Nationwide delivery available via trusted logistics partners.
-  </p>
+  <h2 class="text-center mb-5 fw-bold text-warning">🚚 Shipping & Delivery</h2>
+
+  <div class="row g-4">
+
+    <!-- Local Shipping -->
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h4 class="card-title fw-bold text-warning mb-3">🇳🇬 Local Delivery (Nigeria)</h4>
+          <ul class="list-unstyled text-muted mb-0">
+            <li>📍 Lagos & Port Harcourt: <strong>Within 1 week</strong></li>
+            <li>📍 Other states: <strong>5–10 business days</strong></li>
+            <li>🤝 Partnered with trusted nationwide couriers</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- International Shipping -->
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h4 class="card-title fw-bold text-warning mb-3">🌍 International Shipping</h4>
+          <p class="text-muted mb-2">
+            We ship worldwide via <strong>DHL Express</strong>.  
+            Estimated delivery: <strong>3–7 business days</strong>.
+          </p>
+          <p class="text-muted mb-0">📦 Tracking number sent immediately after dispatch.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shipping Costs -->
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h4 class="card-title fw-bold text-warning mb-3">💳 Shipping Costs</h4>
+          <p class="text-muted mb-2">
+            Fees are automatically calculated at checkout, based on your location.
+          </p>
+          <p class="text-muted fw-bold mb-0">✨ Free shipping on: <br> ₦800,000+ (local) / $1000+ (international)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customs & Duties -->
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h4 class="card-title fw-bold text-warning mb-3">📦 Customs & Duties</h4>
+          <p class="text-muted mb-0">
+            International customers may be responsible for customs duties/taxes.  
+            DHL will notify you if applicable.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Processing -->
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h4 class="card-title fw-bold text-warning mb-3">⚡ Order Processing</h4>
+          <p class="text-muted mb-0">
+            All orders are carefully prepared and dispatched within <strong>1–2 business days</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Returns -->
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h4 class="card-title fw-bold text-warning mb-3">↩️ Returns</h4>
+          <p class="text-muted mb-0">
+            Please review our <a href="{% url 'shop:returns' %}" class="text-warning fw-bold">Returns Policy</a> for details on exchanges and returns.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
+
 {% endblock %}

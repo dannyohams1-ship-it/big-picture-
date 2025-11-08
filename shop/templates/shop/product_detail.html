@@ -1,131 +1,392 @@
 {% extends "shop/base.html" %}
-{% load static %}
-{% block content %}
 {% load static currency_tags %}
 
-<div class="container mt-5">
-    <div class="row g-5">
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+{% endblock %}
 
-        <!-- =======================
-             PRODUCT IMAGES
-        ======================== -->
-        <div class="col-md-6">
-            {% if product.image or product.images.all %}
-            <div id="productCarousel" class="carousel slide border rounded-3 shadow-sm overflow-hidden" data-bs-ride="carousel">
-                <div class="carousel-inner" style="aspect-ratio:1/1; object-fit:cover;">
-                    {% if product.image %}
-                    <div class="carousel-item active">
-                        <img src="{{ product.image.url }}" class="d-block w-100 h-100" alt="{{ product.name }}" style="object-fit:cover;">
-                    </div>
-                    {% endif %}
+{% block content %}
 
-                    {% for img in product.images.all %}
-                    <div class="carousel-item {% if not product.image and forloop.first %}active{% endif %}">
-                        <img src="{{ img.image.url }}" class="d-block w-100 h-100" alt="{{ product.name }}" style="object-fit:cover;">
-                    </div>
-                    {% endfor %}
-                </div>
-
-                <!-- Carousel controls -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon"></span>
-                </button>
-            </div>
-            {% else %}
-            <img src="https://via.placeholder.com/500x500.png?text=No+Image"
-                 alt="No Image"
-                 class="img-fluid border rounded-3 shadow-sm">
-            {% endif %}
-        </div>
-
-        <!-- =======================
-             PRODUCT INFO
-        ======================== -->
-        <div class="col-md-6">
-            <h2 class="fw-bold mb-2">{{ product.name }}</h2>
-            {% load currency %}
-            <h4 class="text-warning fw-semibold mb-3">
-              {{ product.price|as_currency:request.session.currency }}
-            </h4>
-
-            <!-- Stock Status -->
-            {% if product.stock > 5 %}
-                <p class="text-success fw-semibold">In Stock</p>
-            {% elif product.stock > 0 %}
-                <p class="text-danger fw-semibold">Only {{ product.stock }} left!</p>
-            {% else %}
-                <p class="text-muted fw-semibold">Out of Stock</p>
-            {% endif %}
-
-            <!-- Product Description -->
-            {% if product.description %}
-                <p class="text-muted">{{ product.description }}</p>
-            {% else %}
-                <p class="text-muted">No description available.</p>
-            {% endif %}
-
-            <!-- Add to Cart -->
-            {% if product.stock > 0 %}
-            <form method="post" action="{% url 'add_to_cart' product.id %}" class="d-flex gap-3 align-items-center my-3">
-                {% csrf_token %}
-                <input type="number"
-                       name="quantity"
-                       value="1"
-                       min="1"
-                       max="{{ product.stock }}"
-                       class="form-control text-center"
-                       style="width:100px;">
-                <button type="submit" class="btn btn-dark flex-grow-1 py-2 rounded-pill">
-                    🛒 Add to Cart
-                </button>
-            </form>
-            <small class="text-muted">Available: {{ product.stock }}</small>
-            {% else %}
-            <button class="btn btn-secondary btn-lg mt-3" disabled>Out of Stock</button>
-            {% endif %}
-
-            <!-- Delivery Info -->
-            <div class="mt-4">
-                <small class="d-block text-muted">
-                    🚚 Delivery within <strong>Lagos & Port Harcourt</strong>: <strong>1 week</strong>.  
-                    Outside regions: via trusted logistics partners.
-                </small>
-            </div>
-
-            <!-- Social Sharing -->
-            <div class="mt-4">
-                <h5>Share this product:</h5>
-                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
-                   target="_blank" class="btn btn-sm btn-primary me-2">Facebook</a>
-                <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text=Check this out!"
-                   target="_blank" class="btn btn-sm btn-info text-white me-2">Twitter</a>
-                <a href="https://wa.me/?text=Check this product: {{ request.build_absolute_uri }}"
-                   target="_blank" class="btn btn-sm btn-success">WhatsApp</a>
-            </div>
-        </div>
+<!-- =========================
+     HERO SECTION
+========================= -->
+<section class="container py-5 product-hero">
+  <div class="row g-5 align-items-center">
+    
+    <!-- Product Image -->
+    <div class="col-md-6">
+      <div class="main-image position-relative border rounded-4 overflow-hidden shadow-sm">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" 
+               alt="{{ product.name }}" 
+               class="w-100 h-100 object-fit-cover rounded-4">
+        {% else %}
+          <img src="https://via.placeholder.com/600x600.png?text=No+Image"
+               alt="No image available"
+               class="w-100 h-100 object-fit-cover rounded-4">
+        {% endif %}
+      </div>
     </div>
-</div>
+
+    <!-- Product Info -->
+    <div class="col-md-6">
+      <h1 class="display-6 fw-bold font-serif mb-2">{{ product.name }}</h1>
+      <p class="lead text-muted mb-3">{{ product.tagline|default:"Undetectable lace, pre-plucked perfection." }}</p>
+
+      <!-- Price -->
+      <h3 class="text-gold fw-semibold mb-3">
+        {{ product.price|as_currency:request.session.currency }}
+      </h3>
+
+      <!-- Variant Options -->
+      <div id="variantOptions" class="mb-4">
+        {% if product.length_options %}
+          <div class="mb-3">
+            <strong class="text-dark">Length:</strong>
+            <div class="d-flex flex-wrap gap-2 mt-1">
+              {% for length in product.length_options %}
+                <button type="button" class="variant-btn" data-variant="{{ length }}">{{ length }}"</button>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+        {% if product.lace_type_options %}
+          <div class="mb-3">
+            <strong class="text-dark">Lace Type:</strong>
+            <div class="d-flex flex-wrap gap-2 mt-1">
+              {% for lace in product.lace_type_options %}
+                <button type="button" class="variant-btn" data-variant="{{ lace }}">{{ lace }}</button>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+        {% if product.color_options %}
+          <div class="mb-3">
+           <strong class="text-dark">Color:</strong>
+           <div class="d-flex flex-wrap gap-2 mt-1">
+             {% for color in product.color_options %}
+               <button type="button" class="variant-btn" data-variant="{{ color }}">{{ color }}</button>
+             {% endfor %}
+            </div>
+           </div>
+        {% endif %}
+
+      </div>
+
+      <!-- CTA Buttons -->
+      {% if product.stock > 0 %}
+      <form method="post" action="{% url 'shop:add_to_cart' product.id %}" class="d-flex flex-column gap-3">
+        {% csrf_token %}
+        <input type="hidden" name="quantity" value="1">
+
+        <button type="submit" class="btn btn-dark rounded-pill py-3 fw-semibold w-100">🛒 Add to Cart</button>
+        <button type="button" class="btn btn-outline-gold rounded-pill py-3 fw-semibold w-100">Buy Now</button>
+
+        <small class="text-muted d-block text-center">
+          “Secure checkout | Authentic quality guaranteed”
+        </small>
+      </form>
+      {% else %}
+        <button class="btn btn-secondary btn-lg mt-3 w-100 rounded-pill" disabled>Out of Stock</button>
+      {% endif %}
+    </div>
+  </div>
+</section>
+<!-- =========================
+     STORYTELLING SECTION WITH INDIVIDUAL CAPTIONS
+========================= -->
+<section class="story-block py-5 bg-light">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      
+      <!-- Image Carousel -->
+      <div class="col-md-6">
+        {% if product.images.all %}
+        <div id="storyCarousel" 
+             class="carousel slide carousel-fade" 
+             data-bs-ride="carousel" 
+             data-bs-interval="4000" 
+             aria-label="Product image carousel for {{ product.name }}">
+
+          <!-- Carousel Inner -->
+          <div class="carousel-inner border rounded-4 shadow-sm overflow-hidden" style="aspect-ratio:1/1;">
+            {% for img in product.images.all %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}" 
+                 data-description="{{ img.description|default_if_none:product.story_text|default_if_none:'Every Luchi wig is hand-tied from premium Remy strands, designed to melt seamlessly with your skin tone for that effortlessly flawless finish.' }}">
+              
+              <div class="position-relative w-100 h-100">
+                <img src="{{ img.image.url }}" 
+                     class="d-block w-100 h-100 object-fit-cover" 
+                     alt="{{ img.caption|default:product.name }}">
+
+                <!-- Caption Overlay -->
+                {% if img.caption %}
+                  <div class="position-absolute bottom-0 start-0 end-0 text-white p-3"
+                      style="background: linear-gradient(180deg, transparent 10%, rgba(0,0,0,0.75) 100%);">
+                   <h5 class="fw-bold mb-1">{{ img.caption }}</h5>
+                  </div>
+                {% else %}
+                  <div class="position-absolute bottom-0 start-0 end-0 text-white p-3"
+                      style="background: linear-gradient(180deg, transparent 10%, rgba(0,0,0,0.75) 100%);">
+                   <h5 class="fw-bold mb-1">LUCHI ADDICTION</h5>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- Carousel Controls -->
+          {% if product.images.all.count > 1 %}
+          <button class="carousel-control-prev" type="button" data-bs-target="#storyCarousel" data-bs-slide="prev" aria-label="Previous image">
+            <span class="carousel-control-prev-icon"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#storyCarousel" data-bs-slide="next" aria-label="Next image">
+            <span class="carousel-control-next-icon"></span>
+          </button>
+          {% endif %}
+        </div>
+
+        <!-- Thumbnails -->
+        <div class="d-flex justify-content-center gap-2 mt-3 flex-wrap">
+          {% for img in product.images.all %}
+          <img src="{{ img.image.url }}"
+               class="thumb border rounded-3"
+               style="width:70px; height:70px; object-fit:cover; cursor:pointer; opacity:0.85; transition:opacity 0.3s;"
+               data-bs-target="#storyCarousel"
+               data-bs-slide-to="{{ forloop.counter0 }}"
+               alt="{{ img.caption|default:product.name }} thumbnail"
+               onmouseover="this.style.opacity=1"
+               onmouseout="this.style.opacity=0.85">
+          {% endfor %}
+        </div>
+
+        {% else %}
+        <img src="{{ product.image.url }}" class="rounded-4 shadow-sm w-100" alt="{{ product.name }}">
+        {% endif %}
+      </div>
+
+      <!-- Story Text -->
+      <div class="col-md-6">
+        <h2 class="fw-bold text-dark mb-3">{{ product.name }}</h2>
+        <p id="storyText" class="text-muted fs-5">
+          {% if product.images.first and product.images.first.description %}
+            {{ product.images.first.description }}
+          {% elif product.story_text %}
+            {{ product.story_text }}
+          {% else %}
+            Every Luchi wig is hand-tied from premium Remy strands, designed to melt seamlessly with your skin tone for that effortlessly flawless finish.
+           {% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================
+     SPECIFICATIONS / TABS
+========================= -->
+<section class="py-5">
+  <div class="container">
+    <ul class="nav nav-tabs border-gold mb-4" id="specTabs" role="tablist">
+      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview">Overview</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#specs">Specifications</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipping">Shipping & Returns</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#faq">FAQ</button></li>
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane fade show active" id="overview">
+        <p class="text-muted">{{ product.overview|default:"This luxury piece is crafted with care, ensuring longevity, comfort, and a natural blend with every complexion." }}</p>
+      </div>
+
+      <div class="tab-pane fade" id="specs">
+        <div class="row">
+          <div class="col-md-6">
+            <ul class="list-unstyled text-muted">
+              <li><strong>Hair Type:</strong> {{ product.hair_type|default:"Human Hair" }}</li>
+              <li><strong>Lace Type:</strong> {{ product.lace_type|default:"HD Lace" }}</li>
+              <li><strong>Length:</strong> {{ product.length|default:"Varies by selection" }}</li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <ul class="list-unstyled text-muted">
+              <li><strong>Density:</strong> {{ product.density|default:"180%" }}</li>
+              <li><strong>Color:</strong> {{ product.color|default:"Natural Black" }}</li>
+              <li><strong>Origin:</strong> {{ product.origin|default:"Brazilian / Peruvian" }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="shipping">
+        <p class="text-muted">🚚 Lagos & Port Harcourt: 1 week. Nationwide delivery via trusted logistics partners.</p>
+        <p class="text-muted">🔄 30-day easy returns for unworn products in original packaging.</p>
+      </div>
+
+      <div class="tab-pane fade" id="faq">
+        <div class="accordion" id="faqAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#q1">Can I dye this wig?</button></h2>
+            <div id="q1" class="accordion-collapse collapse show"><div class="accordion-body">Yes, all our wigs are made from 100% human hair, allowing for dyeing, curling, and restyling.</div></div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q2">How long does it last?</button></h2>
+            <div id="q2" class="accordion-collapse collapse"><div class="accordion-body">With proper care, your Luchi wig can last 1–2 years or longer.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================
+     CUSTOMER REVIEWS + FORM
+========================= -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="fw-bold mb-4">Customer Reviews</h2>
+
+    {% if product.reviews.all %}
+      <div class="mb-4">
+        <h5 class="text-gold fw-semibold">
+          ⭐ {{ product.average_rating|default:"4.9" }} | {{ product.reviews.count }} Reviews
+        </h5>
+      </div>
+
+      {% for review in product.reviews.all %}
+      <div class="border rounded-3 p-3 mb-3 bg-white shadow-sm">
+        <div class="d-flex justify-content-between align-items-center">
+          <strong>{{ review.user_name|default:"Anonymous" }}</strong>
+          <small class="text-muted">{{ review.created_at|date:"F j, Y" }}</small>
+        </div>
+        <div class="text-gold mb-1">
+          {% for i in "12345"|make_list %}
+            {% if forloop.counter <= review.rating %}⭐{% else %}☆{% endif %}
+          {% endfor %}
+        </div>
+        <p class="mb-0 text-muted">{{ review.comment }}</p>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted fst-italic">
+        No reviews yet. Be the first to share your Luchi experience!
+      </p>
+    {% endif %}
+
+    <!-- =========================
+         REVIEW FORM
+    ========================= -->
+    <div class="mt-5">
+      <h5 class="fw-semibold mb-3">Leave a Review</h5>
+      <form method="post" action="{% url 'shop:add_review' product.id %}">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-6">
+            <input type="text" name="user_name" class="form-control" placeholder="Your name" required>
+          </div>
+          <div class="col-md-6">
+            <select name="rating" class="form-select" required>
+              <option value="">Rate this product</option>
+              {% for i in "54321"|make_list %}
+              <option value="{{ i }}">{{ i }} Star{{ i|pluralize }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12">
+            <textarea name="comment" rows="3" class="form-control" placeholder="Write your review..." required></textarea>
+          </div>
+          <div class="col-12 text-end">
+            <button type="submit" class="btn btn-dark rounded-pill px-4">
+              Submit Review
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</section>
+</section>
 
 <!-- =======================
-     EXTRA STYLING
+     RELATED PRODUCTS
 ======================= -->
-<style>
-.carousel-inner img {
-    transition: transform .3s ease;
-}
-.carousel-inner img:hover {
-    transform: scale(1.05);
-}
-.btn-dark {
-    background: #000;
-    border: none;
-}
-.btn-dark:hover {
-    background: #d4af37;
-    color: #000;
-}
-</style>
+{% if related_products %}
+<div class="mt-5 border-top pt-4">
+  <h4 class="fw-bold mb-4 text-center">You May Also Like</h4>
+  
+  <div class="row g-4">
+    {% for item in related_products %}
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100 hover-scale">
+        <div class="ratio ratio-1x1 overflow-hidden rounded-top-3">
+          <img 
+            src="{{ item.image.url }}" 
+            loading="lazy" 
+            class="card-img-top object-fit-cover transition" 
+            alt="{{ item.name }}">
+        </div>
+
+        <div class="card-body text-center">
+          <h6 class="fw-semibold mb-1">{{ item.name }}</h6>
+
+          <!-- Average Rating -->
+          {% if item.average_rating %}
+          <div class="text-warning small mb-1">
+            {% for i in "12345"|make_list %}
+              {% if forloop.counter <= item.average_rating %}⭐{% else %}☆{% endif %}
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Price -->
+          <p class="text-gold fw-semibold mb-2">
+            {{ item.price|as_currency:request.session.currency }}
+          </p>
+
+          <!-- View Button -->
+          <a href="{% url 'shop:product_detail' item.id %}" 
+             class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1">
+             View
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<section class="trust-footer text-center py-5 mt-5 border-top">
+    <div class="d-flex justify-content-center gap-5 mb-3 flex-wrap">
+      <span>🔒 Secure Checkout</span>
+      <span>🚚 Fast Delivery</span>
+      <span>💬 24/7 Support</span>
+    </div>
+    <p class="text-muted mb-4">Join thousands of women who trust Luchi for their flawless look.</p>
+    <a href="/products/wigs/" class="btn btn-gold rounded-pill px-5 py-2">Shop More Wigs</a>
+  </section>
+
+
+<!-- =========================
+     STICKY CTA BAR
+========================= -->
+<div class="sticky-bar d-md-none position-fixed bottom-0 start-0 end-0 bg-white border-top shadow-sm p-3 d-flex justify-content-between align-items-center">
+  <div>
+    <h6 class="mb-0 fw-bold">{{ product.name }}</h6>
+    <small class="text-gold">{{ product.price|as_currency:request.session.currency }}</small>
+  </div>
+  <form method="post" action="{% url 'shop:add_to_cart' product.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="quantity" value="1">
+    <button class="btn btn-dark rounded-pill px-4 py-2">Add</button>
+  </form>
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script src="{% static 'js/product_detail.js' %}"></script>
 {% endblock %}

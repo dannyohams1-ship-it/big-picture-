@@ -1,0 +1,88 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Luchi Assistant Analytics{% endblock %}
+
+{% block content %}
+<div style="background-color:#0b0b0b; color:#d4af37; padding:2rem; border-radius:12px;">
+  <h1 style="text-align:center; font-size:1.8rem;">✨ Luchi Assistant — Analytics Dashboard</h1>
+
+  <hr style="border-color:#d4af37; margin:1.5rem 0;">
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1rem;">
+    <div style="background:#111; padding:1rem; border:1px solid #d4af37; border-radius:10px;">
+      <h3>Total Chat Sessions</h3>
+      <p style="font-size:1.6rem;">{{ chat_stats.total_sessions }}</p>
+    </div>
+
+    <div style="background:#111; padding:1rem; border:1px solid #d4af37; border-radius:10px;">
+      <h3>Active (Last 24h)</h3>
+      <p style="font-size:1.6rem;">{{ chat_stats.active_sessions }}</p>
+    </div>
+
+    <div style="background:#111; padding:1rem; border:1px solid #d4af37; border-radius:10px;">
+      <h3>Total Leads</h3>
+      <p style="font-size:1.6rem;">{{ lead_stats.total_leads }}</p>
+    </div>
+
+    <div style="background:#111; padding:1rem; border:1px solid #d4af37; border-radius:10px;">
+      <h3>Opt-Ins</h3>
+      <p style="font-size:1.6rem;">{{ lead_stats.opt_in_count }}</p>
+    </div>
+  </div>
+
+  <canvas id="hourlyChart" style="margin-top:2rem; background:#111; border-radius:10px; padding:1rem;"></canvas>
+  <canvas id="sourceChart" style="margin-top:2rem; background:#111; border-radius:10px; padding:1rem;"></canvas>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const hourlyData = JSON.parse('{{ chat_stats.hourly_activity|safe|escapejs }}');
+  const sourceData = JSON.parse('{{ lead_stats.lead_sources|safe|escapejs }}');
+
+  // Hourly Activity Chart
+  new Chart(document.getElementById('hourlyChart'), {
+    type: 'line',
+    data: {
+      labels: hourlyData.map(x => x.hour),
+      datasets: [{
+        label: 'Messages per Hour',
+        data: hourlyData.map(x => x.count),
+        borderColor: '#d4af37',
+        backgroundColor: 'rgba(212,175,55,0.2)',
+        fill: true,
+      }]
+    },
+    options: {
+      plugins: { legend: { labels: { color: '#d4af37' } } },
+      scales: {
+        x: { ticks: { color: '#d4af37' } },
+        y: { ticks: { color: '#d4af37' } }
+      }
+    }
+  });
+
+  // Lead Sources Chart
+  new Chart(document.getElementById('sourceChart'), {
+    type: 'bar',
+    data: {
+      labels: sourceData.map(x => x.source),
+      datasets: [{
+        label: 'Leads by Source',
+        data: sourceData.map(x => x.count),
+        backgroundColor: '#d4af37'
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#d4af37' } },
+        y: { ticks: { color: '#d4af37' } }
+      }
+    }
+  });
+</script>
+{% endblock %}

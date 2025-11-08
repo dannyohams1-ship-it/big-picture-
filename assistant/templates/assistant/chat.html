@@ -1,0 +1,39 @@
+
+<!-- ==== Luchi Assistant Widget ==== -->
+<div id="luchi-chat-widget">
+  
+  <!-- Floating Chat Button -->
+  <div id="luchi-chat-button" class="luchi-fade-in" title="Chat with Luchi 💫">💬</div>
+
+  <!-- Notification Bubble -->
+  <div id="luchi-notification" class="luchi-notification hidden">
+    <span class="luchi-avatar">💫</span>
+    <div class="luchi-text">
+      Hey beautiful 💖 I’m Luchi — need help finding your perfect look?
+    </div>
+  </div>
+
+  <!-- Chat Window -->
+  <div id="luchi-chat-window" class="hidden">
+    <div class="chat-header">
+      <div class="chat-title">Luchi Assistant ✨</div>
+      <button id="luchi-close-btn">&times;</button>
+    </div>
+
+    <div id="chat-box"></div>
+
+<!-- Contact Support button (hidden initially) -->
+    <div id="handoff-section" style="display:none; margin-top:10px;">
+      <p>It looks like you need human support 💬</p>
+      <a id="contact-button" href="contact" class="btn btn-warning">Contact Support</a>
+    </div>
+
+    <div id="chat-body"></div>
+
+    <div class="chat-footer">
+      <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off">
+      <button id="chat-send-btn">➤</button>
+    </div>
+  </div>
+
+</div>

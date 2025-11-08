@@ -1,0 +1,75 @@
+{% extends "shop/base.html" %}
+{% load currency_tags %}
+{% block content %}
+
+<div class="container py-5">
+  <h2 class="fw-bold text-warning mb-4">Order Summary</h2>
+
+  <!-- Shipping Info -->
+  <div class="card shadow-sm p-4 mb-4">
+    <h5 class="fw-bold mb-3">Shipping Details</h5>
+    <p><strong>Name:</strong> {{ order.customer_name|default:"—" }}</p>
+    <p><strong>Address:</strong>
+      {{ order.address_line1|default:order.address|default:"—" }}
+      {% if order.address_line2 %}, {{ order.address_line2 }}{% endif %}
+    </p>
+    <p><strong>City/State:</strong> {{ order.city|default:"—" }}, {{ order.state|default:"—" }}</p>
+    <p><strong>Country:</strong> {{ order.country|default:"—" }}</p>
+    <p><strong>Email:</strong> {{ order.email|default:"—" }}</p>
+    <p><strong>Phone:</strong> {{ order.phone|default:"—" }}</p>
+  </div>
+
+  <!-- Order Items -->
+  <div class="card shadow-sm p-4 mb-4">
+    <h5 class="fw-bold mb-3">Items</h5>
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th class="text-center">Qty</th>
+          <th class="text-end">Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td class="text-center">{{ item.quantity }}</td>
+            <td class="text-end">{{ item.price|as_currency:request.session.currency }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="3" class="text-center text-muted">No items found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Totals -->
+  <div class="card shadow-sm p-4">
+    <h5 class="fw-bold mb-3">Totals</h5>
+    <div class="d-flex justify-content-between">
+      <span>Subtotal:</span>
+      <strong>{{ subtotal|as_currency:request.session.currency }}</strong>
+    </div>
+    <div class="d-flex justify-content-between">
+      <span>Shipping:</span>
+      <strong>{{ shipping|as_currency:request.session.currency }}</strong>
+    </div>
+    <hr>
+    <div class="d-flex justify-content-between">
+      <span>Total:</span>
+      <strong class="text-success">{{ grand_total|as_currency:request.session.currency }}</strong>
+    </div>
+  </div>
+
+  <!-- Payment -->
+  <div class="text-end mt-4">
+    <a href="{% url 'shop:payment' order.id %}" class="btn btn-warning btn-lg fw-bold px-4">
+      Proceed to Payment
+    </a>
+  </div>
+</div>
+
+{% endblock %}

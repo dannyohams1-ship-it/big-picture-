@@ -1,0 +1,90 @@
+{% load static %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-black sticky-top shadow-sm">
+  <div class="container">
+    <!-- Brand Logo -->
+    <a class="navbar-brand" href="/">
+      <img src="{% static 'shop/images/logo.png' %}" alt="Luchi Addiction"
+           style="height:50px; object-fit: contain;"
+           loading="lazy">
+    </a>
+
+    <!-- Toggle button for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <!-- Centered Nav Links -->
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link fw-semibold" href="/">Home</a></li>
+        <!-- Shop Dropdown -->
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle fw-semibold" href="#" id="shopDropdown"
+     role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Shop
+  </a>
+  <ul class="dropdown-menu" aria-labelledby="shopDropdown">
+    <li><a class="dropdown-item" href="/products/wigs/">Wigs</a></li>
+    <li><a class="dropdown-item" href="/products/laces/">Laces</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="/products/">All Collections</a></li>
+  </ul>
+</li>
+
+        <li class="nav-item"><a class="nav-link fw-semibold" href="/about/">About</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="/contact/">Contact</a></li>
+      </ul>
+
+      <<!-- Right Side Icons -->
+<ul class="navbar-nav ms-auto d-flex flex-row gap-3 align-items-center">
+  
+  <!-- 🌍 Country Dropdown -->
+  <li class="nav-item dropdown ms-3">
+    <a class="nav-link dropdown-toggle" href="#" id="countryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      🌍 {{ detected_country|default:"ZZ" }}
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="countryDropdown">
+      {% for code in dhl_supported_countries|slice:":6" %}
+        <li>
+          <a class="dropdown-item" href="{% url 'shop:set_country_code' code %}">
+            {{ code }}
+          </a>
+        </li>
+      {% endfor %}
+      <li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href="{% url 'shop:select_country' %}">Other countries</a></li>
+    </ul>
+  </li>
+
+      <!-- Right Side Icons -->
+      <ul class="navbar-nav ms-auto d-flex flex-row gap-3 align-items-center">
+        <!-- Currency Switcher -->
+      <li class="nav-item">
+        <form method="get" action="{% url 'shop:set_currency' %}" class="d-inline">
+          {% csrf_token %}
+          <select name="currency" onchange="this.form.submit()" class="form-select form-select-sm bg-dark text-warning border-0">
+            <option value="NGN" {% if request.session.currency == "NGN" %}selected{% endif %}>₦ NGN</option>
+            <option value="USD" {% if request.session.currency == "USD" %}selected{% endif %}>$ USD</option>
+            <option value="EUR" {% if request.session.currency == "EUR" %}selected{% endif %}>€ EUR</option>
+          </select>
+        </form>
+
+      </li>
+
+        <!-- Cart -->
+        <li class="nav-item">
+          <a class="nav-link position-relative fw-semibold" href="{% url 'shop:cart' %}">
+            🛒
+            {% if request.session.cart %}
+              <span class="badge bg-warning text-dark position-absolute top-0 start-100 translate-middle rounded-pill">
+                {{ request.session.cart|length }}
+              </span>
+            {% endif %}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

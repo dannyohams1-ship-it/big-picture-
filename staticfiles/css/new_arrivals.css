@@ -1,0 +1,101 @@
+
+/* Horizontal scroll container */
+.new-scroll {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  gap: 1rem;
+  padding-bottom: 1rem;
+}
+.new-scroll::-webkit-scrollbar { display: none; }
+
+/* Product card uniform sizing */
+.new-card {
+  background: #fff;
+  border: 1px solid #eee;
+  transition: all 0.3s ease;
+  width: 200px;         /* uniform width */
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+.new-card:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  transform: translateY(-6px);
+}
+
+/* Image wrapper */
+.new-img-wrapper {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.new-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+.new-card:hover img { transform: scale(1.05); }
+
+/* Text */
+.new-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  margin: 6px 0 2px;
+}
+.new-price {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #d4af37;
+}
+
+/* Cart button */
+.btn-cart {
+  margin-top: 6px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #000;
+  color: #fff;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
+}
+.btn-cart:hover {
+  background: #d4af37;
+  color: #000;
+}
+
+/* Arrows */
+.scroll-btn {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 10;
+  opacity: 0;                 /* 👈 hidden by default */
+  transition: opacity 0.3s ease;
+}
+
+/* Show only when hovering over the carousel wrapper */
+.position-relative:hover .scroll-btn {
+  opacity: 1;
+}
+
+.scroll-btn.left { left: -15px; }
+.scroll-btn.right { right: -15px; }
+.scroll-btn:hover { background: rgba(0,0,0,0.8); }
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .new-img-wrapper { height: 160px; }
+}

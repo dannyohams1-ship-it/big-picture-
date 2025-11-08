@@ -1,0 +1,114 @@
+{% load static %}
+{% load currency_tags %}
+
+{# NEW ARRIVALS — HERO + GRID (Option A) #}
+<section class="new-arrivals-section container my-5" aria-labelledby="new-arrivals-heading">
+
+  <!-- HERO (Static Image) -->
+  <header class="new-arrivals-hero text-center mb-5">
+    <h2 id="new-arrivals-heading" class="display-4 fw-bold mb-2">New Arrivals</h2>
+    <p class="lead text-muted mb-4">Experience the latest in luxury lace wigs.</p>
+
+    <figure class="hero-figure mx-auto" style="max-width: 1200px;">
+      <img
+        src="{% static 'shop/images/pixie.jpg' %}"
+        alt="Featured luxury lace wig — New Arrival"
+        class="hero-img img-fluid rounded"
+        style="
+          width: 100%;
+          height: auto;
+          display: block;
+          object-fit: cover;
+          aspect-ratio: 16/9;
+        "
+        loading="eager"
+      >
+      <figcaption class="visually-hidden">Featured new arrival</figcaption>
+    </figure>
+  </header>
+  
+  {# PRODUCT GRID — desktop & tablet (4 columns desktop, 3 tablet, 1 mobile) #}
+  <div class="new-arrivals-grid-wrapper">
+    <div class="new-arrivals-grid"
+         role="list"
+         style="display:grid; grid-template-columns:repeat(4,1fr); gap:24px; align-items:start;">
+      {% for product in new_arrivals|slice:":4" %}
+      <article class="product-card" role="listitem"
+               itemscope itemtype="http://schema.org/Product"
+               data-aos="zoom-in-up"
+               data-aos-delay="{{ forloop.counter0|add:1 }}00"
+               >
+        <a href="{% url 'shop:product_detail' product.id %}" class="product-link" itemprop="url" tabindex="0" aria-label="View {{ product.name }}">
+          <figure class="product-image-wrap" style="--ratio:4/5; aspect-ratio:4/5; width:100%; overflow:hidden; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06); margin:0 0 12px;">
+            <img
+              src="{{ product.image.url }}"
+              alt="{{ product.name }} – high quality wig"
+              class="product-image"
+              style="width:100%; height:100%; object-fit:cover; display:block;"
+              loading="lazy"
+              itemprop="image"
+            />
+            
+             <span class="badge new-badge" aria-hidden="true">NEW</span> 
+          </figure>
+        </a>
+
+        <div class="product-meta text-center" style="padding:0 6px;">
+          <h3 class="product-title h6 mb-2" style="font-weight:600; margin:0;" itemprop="name">{{ product.name }}</h3>
+
+          <p class="product-subtle mb-1" style="margin:0; font-size:0.95rem; color:#6c6c6c;">
+            {% if product.tagline %}{{ product.tagline }}{% endif %}
+          </p>
+
+          <p class="product-price fw-bold mb-3" style="color:#b8860b; font-size:1.05rem;" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+            <meta itemprop="priceCurrency" content="NGN" />
+            <span itemprop="price">{{ product.price|as_currency:request.session.currency }}</span>
+          </p>
+
+          <form method="post" action="{% url 'shop:add_to_cart' product.id %}" class="add-to-cart-form" itemprop="offers" aria-label="Add {{ product.name }} to cart">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-block btn-add-to-cart" style="background:#000; color:#fff; border-radius:10px; padding:10px 12px; width:100%; box-shadow:none;">
+              🛒 Add to Cart
+            </button>
+          </form>
+        </div>
+      </article>
+      {% empty %}
+        <p class="text-center text-muted">No new arrivals yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  {# MOBILE FALLBACK / TOUCH-SWIPE (keeps your existing horizontal scroll styling for small screens) #}
+  <div class="new-arrivals-carousel d-block d-md-none mt-4" aria-hidden="false" aria-label="New arrivals carousel (mobile)">
+    <div class="new-scroll d-flex overflow-auto" role="list" style="gap:12px; padding-bottom:6px;">
+      {% for product in new_arrivals %}
+        <article class="new-card p-3 rounded-3 text-center flex-shrink-0" role="listitem"
+                 style="width:72%; min-width:260px; aspect-ratio:4/5; display:flex; flex-direction:column; justify-content:space-between;">
+          <a href="{% url 'shop:product_detail' product.id %}" class="d-block mb-2" aria-label="View {{ product.name }}">
+            <div class="new-img-wrapper" style="aspect-ratio:4/5; overflow:hidden; border-radius:10px;">
+              <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
+            </div>
+          </a>
+
+          <div>
+            <h6 class="new-title mb-1" style="font-weight:600;">{{ product.name }}</h6>
+            <p class="new-price mb-2" style="color:#b8860b; font-weight:700;">{{ product.price|as_currency:request.session.currency }}</p>
+
+            <form method="post" action="{% url 'shop:add_to_cart' product.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-block" style="background:#000; color:#fff; border-radius:8px; padding:8px 10px;">🛒 Add to Cart</button>
+            </form>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+    {# Keep arrows for mobile if you like — optional #}
+  </div>
+
+  {# DESKTOP NAVIGATION ARROWS — optional, only shown on md+ (you can keep your existing functions) #}
+  <div class="d-none d-md-flex justify-content-between align-items-center mt-3" aria-hidden="true">
+    <button class="scroll-btn left" onclick="scrollNewArrivals(-1)" aria-hidden="false" aria-label="Scroll new arrivals left">&#10094;</button>
+    <button class="scroll-btn right" onclick="scrollNewArrivals(1)" aria-hidden="false" aria-label="Scroll new arrivals right">&#10095;</button>
+  </div>
+</section>

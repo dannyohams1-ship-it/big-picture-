@@ -1,0 +1,75 @@
+{% extends "shop/base.html" %}
+{% block content %}
+{% load currency_tags %}
+
+<div class="container py-5">
+  <!-- Header -->
+  <h2 class="fw-bold text-warning mb-4">Select Shipping Method</h2>
+
+  <!-- Delivery Address Summary -->
+  <div class="alert alert-info">
+    <strong>Delivering to:</strong><br>
+    {{ shipping_address.customer_name }}<br>
+    {{ shipping_address.address|default:"" }}<br>
+    {% if shipping_address.city %}{{ shipping_address.city }}, {% endif %}
+    {% if shipping_address.state %}{{ shipping_address.state }}, {% endif %}
+    {{ shipping_address.country }}<br>
+    <small>(Detected country: <strong>{{ detected_country }}</strong>)</small>
+  </div>
+
+  <!-- Shipping Options -->
+  <form method="post" class="p-4 bg-light rounded shadow-sm mb-4">
+    {% csrf_token %}
+
+    {% if shipping_options %}
+      {% for option in shipping_options %}
+        <div class="form-check mb-3">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="shipping_option"
+            id="{{ option.code }}"
+            value="{{ option.code }}"
+            required
+          >
+          <label class="form-check-label" for="{{ option.code }}">
+            <strong>{{ option.label }}</strong><br>
+            <span class="text-success">
+              {{ option.price|as_currency:request.session.currency }}
+            </span>
+          </label>
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-success w-100 mt-3">Continue to Payment</button>
+    {% else %}
+      <div class="alert alert-warning">
+        No shipping options available. Please go back and check your address.
+      </div>
+      <a href="{% url 'shop:checkout' %}" class="btn btn-outline-secondary w-100 mt-2">Back to Checkout</a>
+    {% endif %}
+  </form>
+
+  <!-- Order Summary -->
+  <div class="p-4 bg-light rounded-3 shadow-sm">
+    <h4 class="fw-bold mb-3">Order Summary</h4>
+
+    <div class="d-flex justify-content-between">
+      <span>Subtotal:</span>
+      <span>{{ subtotal|as_currency:request.session.currency }}</span>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <span>Shipping:</span>
+      <span class="text-muted">Select option above</span>
+    </div>
+
+    <hr>
+
+    <div class="d-flex justify-content-between fw-bold fs-5">
+      <span>Grand Total:</span>
+      <span class="text-success">Will update after selection</span>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

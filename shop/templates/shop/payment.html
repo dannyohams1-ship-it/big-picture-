@@ -1,19 +1,57 @@
 {% extends "shop/base.html" %}
+{% load static %}
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-warning mb-4">Payment</h2>
 
-    <div class="card p-4 shadow-sm">
-        <h4>Order Summary</h4>
-        <p><strong>Customer:</strong> {{ order.customer_name }}</p>
-        <p><strong>Total:</strong> NGN {{ order.total }} </p>
+<div class="container py-5">
+  <h2 class="fw-bold text-warning mb-4">💳 Secure Payment</h2>
 
-        <form method="post">
-            {% csrf_token %}
-            <!-- Later we’ll connect Paystack/Stripe here -->
-            <button type="submit" class="btn btn-success">Pay Now</button>
-        </form>
-    </div>
+  <div class="card shadow-lg border-0 p-4">
+    <h4 class="mb-3">Order Summary</h4>
+
+    <ul class="list-group list-group-flush mb-4">
+      <li class="list-group-item d-flex justify-content-between">
+        <span><strong>Customer:</strong></span>
+        <span>{{ order.customer_name }}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between">
+        <span><strong>Order ID:</strong></span>
+        <span>#{{ order.id }}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between">
+        <span><strong>Total:</strong></span>
+        <span>{{ currency }} {{ order.total }}</span>
+      </li>
+    </ul>
+
+    <!-- =============================
+         PAYSTACK GLOBAL PAYMENT
+    ============================== -->
+    <form id="paymentForm" data-public-key="{{ PAYSTACK_PUBLIC_KEY }}" data-order-id="{{ order.id }}" data-currency="{{ currency|default:'NGN' }}" data-total="{{ order.total }}">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="email" class="form-label fw-semibold">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          class="form-control"
+          placeholder="Enter your email address"
+          required
+        />
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-success fw-bold w-100 mt-3"
+        id="paystackButton"
+      >
+        Pay Now with Paystack
+      </button>
+    </form>
+  </div>
 </div>
-{% endblock %}
 
+<!-- Load Paystack SDK + Custom JS -->
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="{% static 'js/paystack.js' %}"></script>
+
+{% endblock %}

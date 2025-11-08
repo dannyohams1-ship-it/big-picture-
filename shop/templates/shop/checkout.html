@@ -1,12 +1,149 @@
 {% extends "shop/base.html" %}
-{% block content %}
-<div class="container mt-5">
-    <h2 class="text-warning mb-4">Checkout</h2>
+{% load static currency_tags %}
 
-    <form method="post" class="p-4 border rounded bg-light shadow-sm">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Place Order</button>
-    </form>
-</div>
+{% block extra_css %}
+  {% if detected_country != "NG" %}
+    <!-- 🌍 Only load intl-tel-input styles for international users -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css"/>
+  {% endif %}
+  <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+{% endblock %}
+
+{% block content %}
+  <!-- Country notice -->
+  <div class="alert alert-info">
+    We detected your country as 
+    <strong>{{ detected_country_name }}</strong> ({{ detected_country }}).<br>
+    You’ll be paying securely via <strong>Paystack</strong>.
+    <a href="{% url 'shop:override_country' %}" class="ms-2">Change?</a>
+  </div>
+
+  <!-- Checkout Form -->
+  <form method="post" class="bg-light p-4 rounded shadow-sm mb-4">
+    {% csrf_token %}
+
+    <!-- Customer Info -->
+    <div class="mb-3">
+      <label for="customer_name" class="form-label">Customer Name</label>
+      <input type="text" id="customer_name" name="customer_name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" id="email" name="email" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="phone" class="form-label">Phone Number</label>
+      <input type="tel" id="phone" name="phone" class="form-control" required>
+      {% if detected_country != "NG" %}
+        <small class="text-muted">Include your country code (auto-detected)</small>
+      {% endif %}
+    </div>
+
+    <!-- Delivery Method -->
+    {% if detected_country == "NG" %}
+      <div id="delivery-method-container" class="mb-4 p-3 border rounded bg-white">
+        <label class="form-label fw-bold mb-2">How would you like to receive your order?</label><br>
+
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="delivery_method" id="deliver_option" value="deliver" checked>
+          <label class="form-check-label" for="deliver_option">Deliver to my address</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="delivery_method" id="pickup_option" value="pickup">
+          <label class="form-check-label" for="pickup_option">Pick up from store</label>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Store Selector (hidden until pickup chosen) -->
+    <div id="store-selector" class="mb-3" style="display:none;">
+      <label for="store_location" class="form-label">Select Store Location</label>
+      <select id="store_location" name="store_location" class="form-select">
+        <option value="">-- Choose Pickup Store --</option>
+        <option value="Lagos - Branch">Lagos - Branch</option>
+        <option value="Port Harcourt - Branch">Port Harcourt - Branch</option>
+      </select>
+    </div>
+
+    <!-- Address Section -->
+    <div id="delivery-address-group">
+      <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <textarea id="address" name="address" rows="3" class="form-control" required></textarea>
+      </div>
+
+      {% if detected_country == "NG" %}
+        <div class="mb-3">
+          <label for="city" class="form-label">City</label>
+          <input type="text" id="city" name="city" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="state" class="form-label">State</label>
+          <select id="state" name="state" class="form-select" required>
+            <option value="">-- Select State --</option>
+            {% for s in nigeria_states %}
+              <option value="{{ s }}">{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <input type="hidden" name="country" value="NG">
+        <input type="hidden" id="shipping_price" name="shipping_price" value="0">
+        <input type="hidden" id="shipping_label" name="shipping_label" value="">
+      {% else %}
+        <div class="mb-3">
+          <label for="city" class="form-label">City</label>
+          <select id="city" name="city" class="form-select" required>
+            <option value="">Loading cities...</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="postal_code" class="form-label">Postal Code</label>
+          <input type="text" id="postal_code" name="postal_code" class="form-control" readonly>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="btn btn-success w-100">
+      {% if detected_country == "NG" %}
+        Proceed to Payment
+      {% else %}
+        Continue to Shipping
+      {% endif %}
+    </button>
+  </form>
+
+  <!-- ✅ Include shared order summary template -->
+  {% include "shop/includes/order_summary.html" %}
+
+  <!-- Payment Security -->
+  <div class="mt-4 text-center">
+    <span class="badge bg-success p-2">🔒 Paystack Secure</span>
+    <p class="mb-2 text-muted">We deliver exclusively with</p>
+    <img src="{% static 'images/icons/DHL-Logo.png' %}" alt="DHL" class="dhl-logo">
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  {% if detected_country == "NG" %}
+    <script src="{% static 'js/checkout_ng.js' %}"></script>
+  {% else %}
+    <!-- 🌍 intl-tel-input script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
+    <!-- Pass country info to JS -->
+    <script>
+      document.body.dataset.country = "{{ detected_country }}";
+    </script>
+
+    <!-- Custom script -->
+    <script src="{% static 'js/checkout_intl.js' %}"></script>
+  {% endif %}
 {% endblock %}
